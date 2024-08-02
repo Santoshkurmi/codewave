@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import logo from "../../assets/logo.svg"
 import { faBell, faMoon } from "@fortawesome/free-regular-svg-icons"
-import { faPerson } from "@fortawesome/free-solid-svg-icons"
+import { faPerson, faSearch } from "@fortawesome/free-solid-svg-icons"
 function Header() {
   return (
     <div 
@@ -9,8 +9,11 @@ function Header() {
         <div className="left flex items-center gap-2">            
             <img src={logo} className=""  width={"50px"} alt="Logo" />
             <span className="pl-0 text-gray-700 font-bold text-xl">CodeWave</span>
-                <div className="searchbox">
-                    <input className="bg-gray-200 p-2 rounded-md outline-gray-300 w-[20rem]" placeholder="Search here" type="text" />
+                <div className="searchbox border relative">
+                    <div className="icon  absolute top-0 left-2 bottom-0 flex justify-center items-center">
+                      <FontAwesomeIcon icon={faSearch} size="xl" className="text-gray-700 hover:bg-gray-200 rounded-full p-4 sm:p-0"/>
+                    </div>
+                    <input className="hidden w-[30vw] max-w-[25rem] sm:block bg-gray-200 p-2 pl-10 rounded-md outline-gray-300" placeholder="Search here" type="text" />
                 </div>
         </div>
             

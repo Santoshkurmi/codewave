@@ -14,7 +14,7 @@ function LeftNavBottom() {
         setActive(source)
     }
     return (
-        <div className="select-none w-[20rem] m-5 shadow-lg border p-4">
+        <div className="select-none  m-5 shadow-lg border p-4">
             {
                 links.map(data => {
                     return (

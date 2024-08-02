@@ -82,7 +82,7 @@ function Feeds() {
     },
   ]
   return (
-    <div className="w-[40rem] p-5">
+    <div className="p-5">
       {
         props.map(data=>{
           return <Post {...data}/>

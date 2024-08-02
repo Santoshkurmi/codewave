@@ -10,7 +10,7 @@ function RightNav() {
        
 ];
     return (
-        <div className="select-none max-h-[80vh] overflow-y-auto w-[25rem] m-5 shadow-lg border p-4">
+        <div className="select-none max-h-[80vh] overflow-y-auto  shadow-lg border p-4">
             <span className="text-3xl font-bold">Trendings Topic</span>
             {
                 links.map(data => {
