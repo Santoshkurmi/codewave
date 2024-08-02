@@ -5,7 +5,7 @@ import { faPerson } from "@fortawesome/free-solid-svg-icons"
 function Header() {
   return (
     <div 
-    className="h-[5rem] select-none shadow-lg rounded-md flex items-center justify-between px-8">
+    className="h-[5rem] z-50 bg-white fixed left-0 top-0 right-0 select-none shadow-lg rounded-md flex items-center justify-between px-8">
         <div className="left flex items-center gap-2">            
             <img src={logo} className=""  width={"50px"} alt="Logo" />
             <span className="pl-0 text-gray-700 font-bold text-xl">CodeWave</span>
