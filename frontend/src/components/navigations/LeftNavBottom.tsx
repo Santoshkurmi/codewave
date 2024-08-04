@@ -1,5 +1,5 @@
 import { faCreativeCommons, faMagento } from "@fortawesome/free-brands-svg-icons";
-import { faCode, faCross, faPeopleLine, faSearch, faUserGroup } from "@fortawesome/free-solid-svg-icons"
+import {  faPeopleLine } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState } from "react";
 
@@ -20,7 +20,7 @@ function LeftNavBottom() {
                     return (
                         <div
                         onClick={()=>onClick(data.text)}
-                         className={"active:bg-gray-300 hover:bg-gray-200 p-4 transition-all duration-500 ease-in-out gap-5 flex items-center text-gray-600 "+ (active == data.text ? "bg-gray-300":"") } >
+                         className={"cursor-pointer active:bg-gray-300 hover:bg-gray-200 p-4 transition-all duration-500 ease-in-out gap-5 flex items-center text-gray-600 "+ (active == data.text ? "bg-gray-300":"") } >
                             <FontAwesomeIcon icon={data.icon} size="lg" />
                             <span>{data.text}</span>
                         </div>

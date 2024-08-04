@@ -16,7 +16,7 @@ function RightNav() {
                 links.map(data => {
                     return (
                         <div
-                         className={" active:bg-gray-300 hover:bg-gray-200 p-4 transition-all duration-500 ease-in-out gap-5 flex items-center text-blue-500 "} >
+                         className={"cursor-pointer active:bg-gray-300 hover:bg-gray-200 p-4 transition-all duration-500 ease-in-out gap-5 flex items-center text-blue-500 "} >
                             <span className="">#{data.text}</span>
                         </div>
                     )

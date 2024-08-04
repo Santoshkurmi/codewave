@@ -1,14 +1,26 @@
+import { useEffect } from "react"
 import Feeds from "./feed/Feeds"
 import Header from "./navigations/Header"
 import LeftNav from "./navigations/LeftNav"
 import LeftNavBottom from "./navigations/LeftNavBottom"
 import PhoneNav from "./navigations/PhoneNav"
 import RightNav from "./navigations/RightNav"
+import { getToken } from "../axios/tokens"
+import { useNavigate } from "react-router-dom"
+import Messages from "./message/Messages"
+import ListMessages from "./message/ListMessages"
 
 function Home() {
+  const navigate = useNavigate()
+  useEffect(()=>{
+    if(getToken() ==null) navigate('/login')
+    
+  },[]) 
   return (
     <div className="home  mt-[6rem] flex mx-6 justify-end md:justify-center">
         <Header/>
+        {/* <Messages/> */}
+        {/* <ListMessages/> */}
         <div className="sm:hidden phone fixed bottom-0 left-0 right-0 w-full bg-white">
           <PhoneNav/>
         </div>

@@ -1,5 +1,5 @@
-import { faBell, faMessage } from "@fortawesome/free-regular-svg-icons"
-import { faCode, faCross, faHome, faPeopleArrows, faSearch, faUserGroup } from "@fortawesome/free-solid-svg-icons"
+import {  faMessage } from "@fortawesome/free-regular-svg-icons"
+import { faCode, faHome, faPeopleArrows, faSearch, faUserGroup } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useState } from "react";
 
