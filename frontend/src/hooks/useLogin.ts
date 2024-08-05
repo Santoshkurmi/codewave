@@ -1,0 +1,77 @@
+import { useState } from "react";
+import api from "../axios/api";
+import {  useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import userStore from "../zustand/UserStore";
+
+function useLogin() {
+
+  const [data,setData] = useState({
+    username:"santosh@gmail.com",
+    password:"Duffer123",
+    loading:false,
+  });
+
+  const [err,setErr] = useState({
+    username:"",
+    password:"",
+  });
+
+  const navigate = useNavigate()
+  const {setUser} = userStore()
+
+  function  updateErr (value:Partial<typeof data>){
+   setErr(prev=>({...prev,...value}));
+  }
+
+  function  updateData (value:Partial<typeof data>){
+   setData(prev=>({...prev,...value}));
+  }
+
+
+  function validate(){
+    var errors:Record<string,string> = {}
+    updateErr({username:"",password:""})
+    const {username,password} = data;
+
+    if(username.length<6){
+        errors.username  ="Username must be at least 6 chars"
+    }
+    if(password.length<6) {
+          errors.password =  "Password must be at least 6 chars"
+    }
+    updateErr(errors)
+    return Object.keys(errors).length==0;
+  }//validate
+
+  async function execute(){
+
+    if(!validate()) return;
+    updateData({loading:true})
+
+    var {username,password} = data;
+    var {res,errors} =await api.send("/login",{username,password})
+
+    updateData({loading:false})
+
+    if(errors==null){
+        toast.success(res.msg,{position:"top-center",autoClose:2000})
+        // setToken(res.token)
+        setUser({token:res.token})
+        // setTimeout(()=>navigate("/"),2000)
+        // navigate("/")
+        return;
+    }//if success
+
+    updateErr(errors)
+
+
+  }//login
+
+  
+
+  return {data,err,updateData,execute}
+
+}
+
+export default useLogin

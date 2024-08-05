@@ -7,8 +7,7 @@ import PhoneNav from "./navigations/PhoneNav"
 import RightNav from "./navigations/RightNav"
 import { getToken } from "../axios/tokens"
 import { useNavigate } from "react-router-dom"
-import Messages from "./message/Messages"
-import ListMessages from "./message/ListMessages"
+import { toast } from "react-toastify"
 
 function Home() {
   const navigate = useNavigate()

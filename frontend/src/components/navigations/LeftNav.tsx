@@ -1,15 +1,17 @@
 import { faBell, faMessage } from "@fortawesome/free-regular-svg-icons"
 import { faCode, faCross, faSearch, faUserGroup } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import axios from "axios";
 import { useState } from "react";
 import api from "../../axios/api";
-import { setToken } from "../../axios/tokens";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Messages from "../message/Messages";
+import userStore from "../../zustand/UserStore";
 
 function LeftNav() {
     const [active,setActive] = useState("");
+    const [openMessage,setOpenMessaage] = useState(false);
     const navigate = useNavigate()
+    const setUser = userStore().setUser;
     const links = [
         { text:"Messages",icon: faMessage },
         { text:"Posts",icon: faCode },
@@ -18,17 +20,28 @@ function LeftNav() {
         { text:"Settings",icon: faSearch },
         { text:"LogOut",icon: faCross },
 ];
-    const onClick = (source:string)=>{
+
+    const toggleMessageScreen = ()=>{
+        setOpenMessaage(!openMessage)
+    }
+
+  async function onClick (source:string){
         setActive(source)
         if(source=="LogOut"){
-            api.get('/logout').then((data)=>{
-                localStorage.clear();
-                navigate('/login')
-            }).catch((error)=>alert(error))
-        }
+                const {errors} =await api.send("/logout",null,"")
+                if(errors){
+                    alert(errors.toString())
+                    setUser({token:''})
+                }
+                else{
+                setUser({token:''})
+                }
+        }//if logout
+        else if(source=="Messages") toggleMessageScreen()
     }
     return (
         <div className="select-none  m-5 shadow-lg border p-4">
+            {openMessage?<Messages/>:<div></div>}
             {
                 links.map(data => {
                     return (

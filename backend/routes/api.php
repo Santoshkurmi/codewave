@@ -18,7 +18,7 @@ Route::prefix('v1')->group(function(){
     Route::post('register',[AuthController::class,'register']);
 });
 //api_auth
-Route::prefix('v1')->middleware(['api','auth:sanctum'])->group(function(){
+Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
     
     Route::get('user',function(){
         return response()->json( ["id"=>request()->header("Authorization")] );

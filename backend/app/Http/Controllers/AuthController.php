@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Psy\Readline\Hoa\Console;
 
 class AuthController extends Controller
 {
@@ -28,12 +29,13 @@ class AuthController extends Controller
             return response()->json([
                 'msg' => 'Successfully created user!',
                 'token'=> $token,
-                'success'=>true
+                'success'=>true,
+                'data'=>$user
                 ],201);
         }//if saved
 
         else{
-            return response()->json(['error'=>'Provide proper details','success'=>false ]);
+            return response()->json(['errors'=>['default'=>'Provide proper details'],'success'=>false ]);
         }
     }//register
 
@@ -42,10 +44,10 @@ class AuthController extends Controller
     public function login(LoginRequest $loginRequest){
         $user = User::where('email',$loginRequest->username)->first();
         if(!$user || !Hash::check($loginRequest->password, $user->password) ){
-            return response()->json(["error"=>"The provided credential is invalid","success"=>false]);
+            return response()->json(["errors"=>['default'=>"The provided credential is invalid"],"success"=>false]);
         }//if false
         else{
-            return response()->json(["success"=>true,"msg"=>"Login successfull","token"=>$user->createToken($user->email)->plainTextToken]);
+            return response()->json(["success"=>true,'data'=>$user,"msg"=>"Login successfull","token"=>$user->createToken($user->email)->plainTextToken]);
         }
     }//login
 
