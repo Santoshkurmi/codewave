@@ -19,9 +19,9 @@ function PhoneNav() {
     return (
         <div className="select-none flex flex-row justify-between  m-2 mt-0 shadow-lg border p-4">
             {
-                links.map(data => {
+                links.map((data,key) => {
                     return (
-                        <div
+                        <div key={key}
                         onClick={()=>onClick(data.text)}
                          className={"rounded-full p-2 hover:bg-gray-200 "+ (active == data.text ? "bg-gray-300":"") } >
                             <FontAwesomeIcon icon={data.icon} size="lg" />

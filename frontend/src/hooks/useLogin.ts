@@ -30,8 +30,10 @@ function useLogin() {
 
 
   function validate(){
+
     var errors:Record<string,string> = {}
     updateErr({username:"",password:""})
+
     const {username,password} = data;
 
     if(username.length<6){
@@ -55,7 +57,7 @@ function useLogin() {
     updateData({loading:false})
 
     if(errors==null){
-        toast.success(res.msg,{position:"top-center",autoClose:2000})
+        toast.success(res.msg,{position:"top-center",autoClose:1000})
         // setToken(res.token)
         setUser({token:res.token})
         // setTimeout(()=>navigate("/"),2000)

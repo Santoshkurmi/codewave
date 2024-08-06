@@ -19,6 +19,7 @@ class AuthController extends Controller
         $user = new User([
             'name'=>$request->name,
             'email'=>$request->email,
+            'username'=>$request->username,
             'password'=>bcrypt($request->password)
         ]);
 
@@ -42,7 +43,7 @@ class AuthController extends Controller
 
 
     public function login(LoginRequest $loginRequest){
-        $user = User::where('email',$loginRequest->username)->first();
+        $user = User::where('email',$loginRequest->username)->orWhere('username',$loginRequest->username)->first();
         if(!$user || !Hash::check($loginRequest->password, $user->password) ){
             return response()->json(["errors"=>['default'=>"The provided credential is invalid"],"success"=>false]);
         }//if false
@@ -57,4 +58,10 @@ class AuthController extends Controller
         auth()->user()->currentAccessToken()->delete();
         return response()->json(['msg'=>'User is log out','success'=>true]);
     }//logout
+
+
+    public function getAllUsers(){
+        $user = User::all();
+        return response()->json(['success'=>true,'msg'=>'fetched success','data'=>$user]);
+    }//getAllUsers
 }

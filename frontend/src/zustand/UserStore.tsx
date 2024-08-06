@@ -1,6 +1,5 @@
 import { create } from "zustand";
 import { getToken, setToken } from "../axios/tokens";
-import api from "../axios/api";
 
 
 interface Data {
@@ -14,7 +13,6 @@ interface User {
   user: Data,
   setUser: (data: Partial<Data>) => void
 }
-
 
 
 const userStore = create<User>()((set) => ({

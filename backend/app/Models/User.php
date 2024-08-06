@@ -12,6 +12,11 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable,HasApiTokens;
 
+
+    public function conversations(){
+        return $this->belongsToMany(Conversation::class,'conversation_users');
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -20,6 +25,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'username',
         'password',
     ];
 

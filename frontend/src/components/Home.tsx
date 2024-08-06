@@ -7,7 +7,6 @@ import PhoneNav from "./navigations/PhoneNav"
 import RightNav from "./navigations/RightNav"
 import { getToken } from "../axios/tokens"
 import { useNavigate } from "react-router-dom"
-import { toast } from "react-toastify"
 
 function Home() {
   const navigate = useNavigate()
@@ -16,21 +15,21 @@ function Home() {
     
   },[]) 
   return (
-    <div className="home  mt-[6rem] flex mx-6 justify-end md:justify-center">
+    <div className="home fixed top-[6rem] left-0  flex mx-6 justify-end md:justify-between">
         <Header/>
         {/* <Messages/> */}
         {/* <ListMessages/> */}
-        <div className="sm:hidden phone fixed bottom-0 left-0 right-0 w-full bg-white">
+        <div className="sm:hidden phone fixed  bottom-0 left-0 right-0 w-full bg-white">
           <PhoneNav/>
         </div>
-        <div className="left fixed min-w-fit left-0 w-[20vw] hidden sm:block">
+        <div className="left  min-w-fit left-0 w-[20vw] hidden sm:block">
           <LeftNav/>
           <LeftNavBottom/>
         </div>
-        <div className="center w-[95vw] sm:w-[70vw] md:w-[60vw] ">
+        <div className="center overflow-y-auto h-[calc(100vh-6rem)] w-[95vw] sm:w-[70vw] md:w-[60vw] ">
           <Feeds/>    
         </div>
-        <div className="right m-3  fixed right-0 w-[20vw] hidden md:block">
+        <div className="right m-3  right-0 w-[20vw] hidden md:block">
           <RightNav/>    
         </div>
         

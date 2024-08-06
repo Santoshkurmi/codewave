@@ -13,9 +13,9 @@ function RightNav() {
         <div className="select-none max-h-[80vh] overflow-y-auto  shadow-lg border p-4">
             <span className="text-3xl font-bold">Trendings Topic</span>
             {
-                links.map(data => {
+                links.map((data,key) => {
                     return (
-                        <div
+                        <div key={key}
                          className={"cursor-pointer active:bg-gray-300 hover:bg-gray-200 p-4 transition-all duration-500 ease-in-out gap-5 flex items-center text-blue-500 "} >
                             <span className="">#{data.text}</span>
                         </div>

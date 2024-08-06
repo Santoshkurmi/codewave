@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ConversationController;
+use App\Http\Controllers\MessageController;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,10 +21,14 @@ Route::prefix('v1')->group(function(){
 });
 //api_auth
 Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
+
+    Route::get('users',[AuthController::class,'getAllUsers']);
     
-    Route::get('user',function(){
-        return response()->json( ["id"=>request()->header("Authorization")] );
-    });
+
+    Route::post('message/send',[MessageController::class,'send']);
+    Route::post('message',[MessageController::class,'get']);
+
+    Route::post('conversations',[ConversationController::class,'getConversations']);
 
     Route::get('logout',[AuthController::class,'logout']);
 

@@ -2,14 +2,13 @@ import { Link } from "react-router-dom"
 import logo from "../../assets/logo.svg"
 import useLogin from "../../hooks/useLogin";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 function Login() {
 
   var {data,err,updateData,execute}  = useLogin();
 
   return (
     <>
-    <ToastContainer/>
+    {/* <ToastContainer/> */}
     <div className="flex select-none h-[100vh] justify-center items-center">
       <div className="box border p-5 shadow-md w-[90vw] sm:w-[50vw] md:w-[30vw]">
         <div className="logo_name flex items-center justify-center gap-2">

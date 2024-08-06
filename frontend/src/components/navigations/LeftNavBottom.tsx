@@ -16,9 +16,9 @@ function LeftNavBottom() {
     return (
         <div className="select-none  m-5 shadow-lg border p-4">
             {
-                links.map(data => {
+                links.map((data,key) => {
                     return (
-                        <div
+                        <div key={key}
                         onClick={()=>onClick(data.text)}
                          className={"cursor-pointer active:bg-gray-300 hover:bg-gray-200 p-4 transition-all duration-500 ease-in-out gap-5 flex items-center text-gray-600 "+ (active == data.text ? "bg-gray-300":"") } >
                             <FontAwesomeIcon icon={data.icon} size="lg" />

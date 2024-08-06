@@ -1,22 +1,23 @@
 import MessageProfile from "./MessageProfile"
 import { useState } from "react";
 import ListMessages from "./ListMessages";
+import { useNavigate } from "react-router-dom";
 
 function Messages() {
 
     const [showMsgScreen,setShowMsgScreen] = useState(false)
     const [name,setName] = useState("")
     const [time,setTime] = useState("")
+    const navigate = useNavigate()
 
     function openMessageScreen(namep:string,timep:string){
-        setName(namep)
-        setTime(timep)
-        setShowMsgScreen(true)
+        // setName(namep)
+        // setTime(timep)
+        // setShowMsgScreen(true)
+        navigate('/popMessages/'+namep)
+
     }
 
-    function closeMessageScreen(){
-        setShowMsgScreen(false)
-    }
     const data = [
         {
             name:'Narayan Panthi',
@@ -55,17 +56,17 @@ function Messages() {
         }
     ];
   return (
-    !showMsgScreen? <div className="fixed cursor-pointer bg-white top-[10rem] left-[25rem] w-[50vw] border rounded-lg shadow-md px-8 py-5">
+    <div className="fixed cursor-pointer bg-white top-[6rem] left-[0rem] w-[100vw] sm:left-[25rem] sm:w-[50vw] border rounded-lg shadow-md px-8 py-5">
         <div className="text-xl text-gray-700 font-bold mb-5">Messages</div>
         <div className="search mb-7">
             <input className="p-3 bg-gray-200 rounded-lg w-full" type="text" placeholder="Search Messages" />
         </div>
-        <div className="profiles max-h-[50vh] overflow-y-auto">
+        <div className="profiles max-h-[60vh] overflow-y-auto">
         {
-            data.map((each)=><MessageProfile {...each} callback={openMessageScreen} />)
+            data.map((each,key)=><MessageProfile {...each} key={key} callback={openMessageScreen} />)
         }
         </div>
-    </div>:<ListMessages name={name} active={time} closeMessageScreen={closeMessageScreen}/>
+        </div>
   )
 }
 

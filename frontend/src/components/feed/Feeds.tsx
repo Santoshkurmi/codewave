@@ -84,8 +84,8 @@ function Feeds() {
   return (
     <div className="p-5">
       {
-        props.map(data=>{
-          return <Post {...data}/>
+        props.map((data,key)=>{
+          return <Post {...data} key={key}/>
         })
       }
     </div>

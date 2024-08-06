@@ -5,16 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Message extends Model
+class ConversationUser extends Model
 {
     use HasFactory;
-    protected $fillable =['conversation_id','user_id','text'];
+    protected $fillable =['conversation_id','user_id'];
 
     public function user(){
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
-
     public function conversation(){
-        return $this->belongsTo(Conversation::class);
+        return $this->belongsTo(Conversation::class,'conversation_id');
     }
 }
