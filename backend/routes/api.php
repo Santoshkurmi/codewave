@@ -22,11 +22,11 @@ Route::prefix('v1')->group(function(){
 //api_auth
 Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
 
-    Route::get('users',[AuthController::class,'getAllUsers']);
+    Route::post('users',[AuthController::class,'getAllUsers']);
     
 
     Route::post('message/send',[MessageController::class,'send']);
-    Route::post('message',[MessageController::class,'get']);
+    Route::post('messages',[MessageController::class,'get']);
 
     Route::post('conversations',[ConversationController::class,'getConversations']);
 

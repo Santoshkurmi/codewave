@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import api from "../axios/api";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -24,15 +24,15 @@ function useRegister() {
     const navigate = useNavigate()
     const setUser = userStore().setUser;
 
-    function updateData(value: Partial<typeof data>) {
+    const updateData = useCallback(function updateData(value: Partial<typeof data>) {
         setData(prev => ({ ...prev, ...value }))
-    }//updateValue
+    },[])//updateValue
 
-    function updateErr(value: Partial<typeof data>) {
+    const updateErr =useCallback(function updateErr(value: Partial<typeof data>) {
         setErr(prev => ({ ...prev, ...value }))
-    }//updateValue
+    },[])//updateValue
 
-    function validate() {
+    const validate = useCallback( function validate() {
 
         var errors: Record<string, string> = {}
         updateErr({name:"",email:"",username:"",password:"",confirmPassword:""})
@@ -55,9 +55,9 @@ function useRegister() {
         }
         updateErr(errors)
         return Object.keys(errors).length == 0;
-    }//
+    },[data])//
 
-    async function execute() {
+    const execute = useCallback(async function execute() {
 
         if(!validate()) return;
         updateData({loading:true})
@@ -75,7 +75,7 @@ function useRegister() {
 
         updateErr(errors)
 
-    }//execute
+    },[data])//execute
 
     return { data, err, updateData, execute }
 }

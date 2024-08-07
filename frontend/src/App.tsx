@@ -7,6 +7,7 @@ import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import Messages from "./components/message/Messages";
 import ListMessages from "./components/message/ListMessages";
+import Test from "./tests/Test";
 
 function  App() {
 
@@ -25,7 +26,7 @@ function  App() {
                     element:<Messages/>
                 },
                 {
-                    path:'popMessages/:user',
+                    path:'popMessages/:user_id',
                     element:<ListMessages/>
                 },
             ]
@@ -38,11 +39,15 @@ function  App() {
             path: '/register',
             element:token? <Navigate to='/'/>: <Register />
         },
+        {
+            path: '/test',
+            element:<Test/>
+        },
     ]);
     console.log("Bye")
     return (
         <div>
-            <ToastContainer/>
+            <ToastContainer autoClose={2000} position={"top-center"}/>
             <RouterProvider router={router} />
         </div>
     )

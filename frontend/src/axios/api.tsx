@@ -14,7 +14,7 @@ const axiosFunc =()=> axios.create(
     }
 );
 
-async function send(path:string,body:any,method:string|null='POST'){
+async function send(path:string,body:any={},method:string|null='POST'){
     // kkk
     // axiosObj().defaults.headers.get['Authorization'] ="mama "+ getToken()?.toString();
     const axiosObj = axiosFunc()
@@ -32,18 +32,7 @@ async function send(path:string,body:any,method:string|null='POST'){
        errors = {default:(e as string).toString()}; 
     }
     if(errors?.default !=null)
-        
-        toast.error(errors.default, {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            transition: Zoom,
-            });
+        toast.error(errors.default);
     return {res:data,errors}
     
 }

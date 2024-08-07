@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import api from "../axios/api";
 import {  useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -12,6 +12,11 @@ function useLogin() {
     loading:false,
   });
 
+  const dataRef = useRef(data)
+  useEffect(()=>{
+    dataRef.current = data;
+  },[data])
+
   const [err,setErr] = useState({
     username:"",
     password:"",
@@ -20,21 +25,21 @@ function useLogin() {
   const navigate = useNavigate()
   const {setUser} = userStore()
 
-  function  updateErr (value:Partial<typeof data>){
+  const updateErr =useCallback( function  updateErr (value:Partial<typeof data>){
    setErr(prev=>({...prev,...value}));
-  }
+  },[])
 
-  function  updateData (value:Partial<typeof data>){
+  const updateData = useCallback( function  updateData (value:Partial<typeof data>){
    setData(prev=>({...prev,...value}));
-  }
+  },[])
 
 
-  function validate(){
+  const validate = useCallback(function validate(){
 
     var errors:Record<string,string> = {}
     updateErr({username:"",password:""})
 
-    const {username,password} = data;
+    const {username,password} = dataRef.current;
 
     if(username.length<6){
         errors.username  ="Username must be at least 6 chars"
@@ -44,14 +49,14 @@ function useLogin() {
     }
     updateErr(errors)
     return Object.keys(errors).length==0;
-  }//validate
+  },[])//validate
 
-  async function execute(){
+  const execute = useCallback(async function execute(){
 
     if(!validate()) return;
     updateData({loading:true})
 
-    var {username,password} = data;
+    var {username,password} = dataRef.current;
     var {res,errors} =await api.send("/login",{username,password})
 
     updateData({loading:false})
@@ -64,11 +69,8 @@ function useLogin() {
         // navigate("/")
         return;
     }//if success
-
     updateErr(errors)
-
-
-  }//login
+  },[])//execute
 
   
 

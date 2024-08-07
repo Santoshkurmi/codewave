@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class MessageRequest extends FormRequest
+class MessageGetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,12 +23,9 @@ class MessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'text'=>'required|min:1',
             'user_id'=>'required|exists:users,id'
-        //     'conversation_id'=>'required|exists:conversations,id'
         ];
     }
-
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator){
         // return $validator->errors();
         $response = response()->json(['errors'=>$validator->errors()->messages(),'success'=>false]);
