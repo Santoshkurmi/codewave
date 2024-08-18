@@ -1,0 +1,19 @@
+{
+  "name": "codewave",
+  "version": "1.0.0",
+  "description": "Hello everyone this is the csit 7th sem project on codewave.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx npm-run-all -l -p frontend backend socket",
+    "frontend": "(npm --prefix ./frontend run dev)",
+    "backend": " (php ./backend/artisan serve)",
+    "socket": " (php ./backend/artisan reverb:start)"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "laravel-echo": "^1.16.1",
+    "pusher-js": "^8.4.0-rc2"
+  }
+}

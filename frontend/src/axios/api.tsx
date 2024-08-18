@@ -41,7 +41,7 @@ async function send(path:string,body:any={},method:string|null='POST'){
 //     axiosObj.defaults.headers.common['Authorization'] ="Bearer "+ token;
 // }
 
-const api = {
+ const api = {
     send
 }
 

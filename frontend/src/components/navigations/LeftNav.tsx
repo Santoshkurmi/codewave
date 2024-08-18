@@ -1,20 +1,26 @@
 import { faBell, faMessage } from "@fortawesome/free-regular-svg-icons"
 import { faCode, faCross, faSearch, faUserGroup } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useState } from "react";
+import { useRef, useState } from "react";
 import api from "../../axios/api";
 import { BrowserRouter, NavLink, Outlet, RouterProvider, createBrowserRouter, useLocation, useNavigate } from "react-router-dom";
 import Messages from "../message/Messages";
 import userStore from "../../zustand/UserStore";
 import useLogin from "../../hooks/useLogin";
 import useLogout from "../../hooks/useLogout";
+import { useLogoutMutation } from "../../api/apiSlice";
+import { toast } from "react-toastify";
+
 
 function LeftNav() {
+    
     // const [active,setActive] = useState("");
+    const divRef = useRef(null)
     const [currentChat,setCurrentChat] = useState("");
     const navigate = useNavigate()
     const location = useLocation()
     const  {loading,logout} = useLogout()
+    // const [logout,{isSuccess}] = useLogoutMutation();
     const links = [
         { text:"Messages",icon: faMessage,path:'/popMessages' },
         { text:"Posts",icon: faCode,path:'/posts' },
@@ -60,6 +66,7 @@ function LeftNav() {
                          className={ "cursor-pointer active:bg-gray-300 hover:bg-gray-200 p-4 transition-all duration-500 ease-in-out gap-5 flex items-center text-gray-600 "+ ( location.pathname.includes(data.path) ? "bg-gray-300":"") } >
                             <FontAwesomeIcon icon={data.icon} size="lg" />
                             <span>{data.text}</span>
+                            
                         </div>
                     )
                 })

@@ -42,6 +42,8 @@ body {
   margin: 0;
   box-sizing: border-box;
   padding: 0;
+  font-size: large;
+  font-family: 'Times New Roman', Times, serif;
 }
 
 
@@ -56,4 +58,22 @@ body {
   button {
     background-color: #f9f9f9;
   }
+}
+
+
+
+/* Loader container */
+.loader {
+  border: 2px solid #f3f3f3; /* Light grey */
+  border-top: 2px solid #3498db; /* Blue color */
+  border-radius: 50%; /* Make it a circle */
+  width: 25px; /* Size of the loader */
+  height: 25px; /* Size of the loader */
+  animation: spin 1s linear infinite;
+}
+
+/* Keyframes for the spinning animation */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

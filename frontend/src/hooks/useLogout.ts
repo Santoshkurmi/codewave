@@ -10,7 +10,7 @@ function useLogout() {
     const setUser = userStore().setUser
 
    async function logout(){
-        const {res,errors} =await api.send("/logout",null,null)
+        const {res,errors} =await api.send("/logout",{})
         if(errors==null){
            setUser({token:''}) 
            toast.success(res.msg,{position:'top-center',autoClose:1000})

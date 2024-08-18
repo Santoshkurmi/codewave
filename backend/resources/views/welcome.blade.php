@@ -8,6 +8,10 @@
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
+        <script src={{asset("build/assets/app-hGqg4IMw.js")}} ></script>
+        <script src={{asset("build/assets/app-l0sNRNKZ.js")}} ></script>
+        <script src={{asset("test.js")}} ></script>
+
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 
         <!-- Styles -->

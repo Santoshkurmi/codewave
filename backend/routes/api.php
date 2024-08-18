@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/login',function(){
-    return response()->json(['success'=>false,'errors'=>'Unauthorized User']);
+    return response()->json(['success'=>false,'errors'=>'Unauthorized User'],400);
 })->name('login');
 
 // Route::post('register',[AuthController::class,'register']);
@@ -19,6 +19,9 @@ Route::prefix('v1')->group(function(){
     Route::post('login',[AuthController::class,'login']);
     Route::post('register',[AuthController::class,'register']);
 });
+
+
+
 //api_auth
 Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
 
@@ -30,7 +33,7 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
 
     Route::post('conversations',[ConversationController::class,'getConversations']);
 
-    Route::get('logout',[AuthController::class,'logout']);
+    Route::post('logout',[AuthController::class,'logout']);
 
 });
 

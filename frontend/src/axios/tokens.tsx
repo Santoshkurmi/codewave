@@ -5,7 +5,16 @@ function setToken(token:string){
 }
 
 function getToken(){
+    // alert(localStorage.getItem('token'))
     return localStorage.getItem("token");
 }
 
-export {setToken,getToken}
+function getUser(){
+    return localStorage.getItem('user_id');
+}
+function setUserXYZ(user:string){
+    return localStorage.setItem('user_id',user);
+}
+
+
+export {setToken,getToken,setUserXYZ,getUser}

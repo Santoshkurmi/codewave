@@ -64,7 +64,8 @@ function useLogin() {
     if(errors==null){
         toast.success(res.msg,{position:"top-center",autoClose:1000})
         // setToken(res.token)
-        setUser({token:res.token})
+        // console.log(res.token,res.data.id)
+        setUser({token:res.token,user_id:res.data.id})
         // setTimeout(()=>navigate("/"),2000)
         // navigate("/")
         return;

@@ -24,6 +24,8 @@ class AuthController extends Controller
         ]);
 
 
+
+
         if($user->save()){
             $generateToken = $user->createToken($request->email);
             $token = $generateToken->plainTextToken;
@@ -55,6 +57,7 @@ class AuthController extends Controller
 
 
     public function logout(){
+
         auth()->user()->currentAccessToken()->delete();
         return response()->json(['msg'=>'User is log out','success'=>true]);
     }//logout

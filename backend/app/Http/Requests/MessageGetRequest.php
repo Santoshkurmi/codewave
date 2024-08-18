@@ -23,7 +23,8 @@ class MessageGetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id'=>'required|exists:users,id'
+            'user_id'=>'required|exists:users,id',
+        
         ];
     }
     protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator){
