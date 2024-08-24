@@ -1,91 +1,22 @@
 import { faPerson } from "@fortawesome/free-solid-svg-icons"
 import Post from "../post/Post"
+import { Outlet } from "react-router-dom"
+import { useGetPostQuery } from "../../api/apiSlice"
 
 function Feeds() {
-    const props = [
-      {
-        title:"How to center a div",
-        user:"Xyz Abc",
-        pic:faPerson,
-        time: "Posted 2 hours ago",
-        description:"I'm trying to center a div horizentally and vertically within its parent container. Can someone help me with the CSS?",
-        code:'.parent{\ndisplay:flex;\njustify-content:center;}\n',
-        votes:40,
-        views:12000,
-        feedback:5
-    },
-      {
-        title:"How to make this changes",
-        user:"Rahul shyam",
-        pic:faPerson,
-        time: "Posted 5 hours ago",
-        description:"I'm helping everyone to center a div horizentally and vertically within its parent container. Can someone help me with the CSS?",
-        code:'.parent{\ndisplay:flex;\njustify-content:center;}\n',
-        votes:80,
-        views:"12k",
-        feedback:5
-    },
-      {
-        title:"How to make this changes",
-        user:"Rahul shyam",
-        pic:faPerson,
-        time: "Posted 5 hours ago",
-        description:"I'm helping everyone to center a div horizentally and vertically within its parent container. Can someone help me with the CSS?",
-        code:'.parent{\ndisplay:flex;\njustify-content:center;}\n',
-        votes:80,
-        views:"12k",
-        feedback:5
-    },
-      {
-        title:"How to make this changes",
-        user:"Rahul shyam",
-        pic:faPerson,
-        time: "Posted 5 hours ago",
-        description:"I'm helping everyone to center a div horizentally and vertically within its parent container. Can someone help me with the CSS?",
-        code:'.parent{\ndisplay:flex;\njustify-content:center;}\n',
-        votes:80,
-        views:"12k",
-        feedback:5
-    },
-      {
-        title:"How to make this changes",
-        user:"Rahul shyam",
-        pic:faPerson,
-        time: "Posted 5 hours ago",
-        description:"I'm helping everyone to center a div horizentally and vertically within its parent container. Can someone help me with the CSS?",
-        code:'.parent{\ndisplay:flex;\njustify-content:center;}\n',
-        votes:80,
-        views:"12k",
-        feedback:5
-    },
-      {
-        title:"How to make this changes",
-        user:"Rahul shyam",
-        pic:faPerson,
-        time: "Posted 5 hours ago",
-        description:"I'm helping everyone to center a div horizentally and vertically within its parent container. Can someone help me with the CSS?",
-        code:'.parent{\ndisplay:flex;\njustify-content:center;}\n',
-        votes:80,
-        views:"12k",
-        feedback:5
-    },
-      {
-        title:"How to make this changes",
-        user:"Rahul shyam",
-        pic:faPerson,
-        time: "Posted 5 hours ago",
-        description:"I'm helping everyone to center a div horizentally and vertically within its parent container. Can someone help me with the CSS?",
-        code:'.parent{\ndisplay:flex;\njustify-content:center;}\n',
-        votes:80,
-        views:"12k",
-        feedback:5
-    },
-  ]
+    
+  const {isError,isSuccess,isLoading,data:posts} = useGetPostQuery('1');
+
+  if(isLoading) return <div className="h-full w-full flex justify-center items-center">
+    <div className="spinner h-[100px] w-[100px]"></div>
+  </div>  
+  if(isError) return <div>Something went wrong fetching the post</div>
   return (
-    <div className="p-5">
+    <div className="">
       {
-        props.map((data,key)=>{
-          return <Post {...data} key={key}/>
+        posts.map((post:any)=>{
+          // console.log(key)
+          return <Post {...post} key={post.id}/>
         })
       }
     </div>

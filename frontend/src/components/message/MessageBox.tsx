@@ -1,17 +1,21 @@
 import { faPerson } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { memo } from "react"
+import { useNavigate } from "react-router-dom"
 
-function MessageBox({id,conversation_id,user_id,current_user,text,lastMessageRef}:any) {
+function MessageBox({id,pic,conversation_id,user_id,current_user,text,lastMessageRef}:any) {
             
         // console.log("Message box")
+        const navigate = useNavigate();
             
             return <div  ref={lastMessageRef}>
 
             
             {user_id==current_user?
            <div  className="rec  flex justify-start items-center gap-3 m-4">
-            <FontAwesomeIcon className="" icon={faPerson} size="2xl" />
+            { pic? <img onClick={()=>navigate('/profile/'+user_id)} className="h-[50px] cursor-pointer w-[50px] rounded-full" src={"http://localhost:8000/storage/profiles/" + pic} />
+            :
+             <FontAwesomeIcon className="" icon={faPerson} size="2xl" />}
             <div className="msg w-1/2 bg-gray-600 text-white p-4 rounded-lg">{text}</div>
         </div>
               : <div  className="sent  flex justify-end m-4">

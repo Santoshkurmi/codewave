@@ -2,6 +2,7 @@ import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
+  useNavigate,
 } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/auth/Login";
@@ -12,11 +13,18 @@ import "react-toastify/dist/ReactToastify.css";
 import Messages from "./components/message/Messages";
 import ListMessages from "./components/message/ListMessages";
 import Test from "./tests/Test";
+import { createElement } from "react";
+import Profile from "./components/profile/profile";
+import Feeds from "./components/feed/Feeds";
+import AddPost from "./components/add_post/AddPost";
+import { store } from './api/store.ts'
+import { Provider } from "react-redux";
 
 
 function App() {
   //There are so many things happening in this world
   const token = userStore().user.token;
+  // const navigate = useNavigate();
 
   // echo.join('message.sent.1')
   // pusherJs
@@ -32,12 +40,26 @@ function App() {
       ),
       children: [
         {
-          path: "popMessages",
+          path: "/",
+          element: <Feeds />,
+
+        },
+        {
+          path: "/add_post",
+          element: <AddPost />,
+
+        },
+        {
+          path: "messages",
           element: <Messages />,
         },
         {
-          path: "popMessages/:user_id",
+          path: "messages/:user_id",
           element: <ListMessages />,
+        },
+        {
+          path: "profile/:user_id?",
+          element: <Profile />,
         },
       ],
     },
@@ -55,15 +77,23 @@ function App() {
     },
   ]);
   console.log("Bye");
+  // console.log("HEllo sfljl");
   // if (token)
 
   return (
-    <div>
-      <ToastContainer autoClose={2000} position={"top-center"} />
-      <RouterProvider router={router} />
-    </div>
+    <Provider store={store}>
+
+      <div className="dark:bg-gray-700">
+        <ToastContainer
+          autoClose={2000}
+          position={"top-center"}
+        />
+        <RouterProvider router={router} />
+      </div>
+
+    </Provider>
+
   );
 }
 
-export default App
-
+export default App;

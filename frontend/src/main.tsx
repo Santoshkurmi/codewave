@@ -1,16 +1,31 @@
-import React, { useRef } from 'react'
+import React, { lazy, Suspense, useRef } from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
-import App from './App.tsx'
-import { ApiProvider } from '@reduxjs/toolkit/query/react'
-import { api } from './api/apiSlice.ts'
-import { Provider } from 'react-redux'
-import { store } from './api/store.ts'
+import  logo from './assets/logo.svg';
+
+const App = lazy(()=>import('./App.tsx'));
+const theme = localStorage.getItem("theme");
+if(theme=="dark"){
+  document.documentElement.classList.add('dark');
+}
+else{
+  document.documentElement.classList.remove('dark');
+
+}
+// const Provider =lazy(()=>import('react-redux'));
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   // <React.StrictMode>
-  <Provider store={store}>
+  <Suspense fallback={
+  <div className='h-[100vh] flex items-center justify-center w-[100vw] bg-white dark:bg-black'>
+      <img src={logo} 
+      className="cursor-pointer"  width={"100px"} alt="Logo" />
+      <span className='dark:text-white text-3xl font-bold'>CodeWave</span>
+      
+  </div>
+  } >
     <App/>
-  </Provider>
+  </Suspense>
+  
   // </React.StrictMode>,
 )

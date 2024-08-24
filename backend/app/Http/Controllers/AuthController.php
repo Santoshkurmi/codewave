@@ -14,7 +14,9 @@ class AuthController extends Controller
 {
 
 
+
     public function register(RegisterRequest $request){
+
 
         $user = new User([
             'name'=>$request->name,
@@ -25,8 +27,9 @@ class AuthController extends Controller
 
 
 
-
         if($user->save()){
+
+
             $generateToken = $user->createToken($request->email);
             $token = $generateToken->plainTextToken;
             return response()->json([
@@ -43,7 +46,7 @@ class AuthController extends Controller
     }//register
 
 
-
+//hello world this is good for here.
     public function login(LoginRequest $loginRequest){
         $user = User::where('email',$loginRequest->username)->orWhere('username',$loginRequest->username)->first();
         if(!$user || !Hash::check($loginRequest->password, $user->password) ){
@@ -57,7 +60,6 @@ class AuthController extends Controller
 
 
     public function logout(){
-
         auth()->user()->currentAccessToken()->delete();
         return response()->json(['msg'=>'User is log out','success'=>true]);
     }//logout

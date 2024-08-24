@@ -17,7 +17,8 @@ import {
 // import { echo } from "../../echo/echoConfig";
 import { getUser } from "../../axios/tokens";
 import { useDispatch } from "react-redux";
-import { echo } from "../../echo/echoConfig";
+import { toast } from "react-toastify";
+import Echo, { Channel } from "laravel-echo";
 
 function ListMessages(props: any) {
   const { user_id } = useParams();
@@ -30,6 +31,7 @@ function ListMessages(props: any) {
   const {
     data: messages = { user: {}, messages: [], isNoMoreMsg: false },
     isSuccess,
+    isLoading: isMessageLoaded
   } = useGetMessagesQuery(Number(user_id));
   const [sendMessage, { isLoading: isMessageSending }] =
     useSendMessageMutation();
@@ -41,10 +43,12 @@ function ListMessages(props: any) {
 
   const dispatch = useDispatch();
   const circular = useRef<HTMLDivElement>(null);
-  const container = useRef<HTMLDivElement>();
+  const container = useRef<HTMLDivElement>(null);
   const loader = useRef<HTMLDivElement>(null);
   var previousScrollHeight = useRef<number>(-1);
   // var [disableScrollListener,setDisableScroll] = useState(false)
+
+  var echoChannelRef = useRef<Channel>(null);
 
   useEffect(() => {
     if (messages.isNoMoreMsg) {
@@ -97,10 +101,30 @@ function ListMessages(props: any) {
       container.current?.removeEventListener("scroll", scrollCallback);
   }, [isLoading, messages]);
 
+
+  // useEffect(()=>{
+  //   if(!msg) return;
+  //   var channel = echoChannelRef.current;
+  //   console.log(channel);
+  //   if(channel){
+  //     alert("yes we havechannel");
+  //   }
+  // },[msg])
+
+
   useEffect(() => {
     // alert("y")
     // return;
+    const echo: Echo = (window as any).echo;
+    if (!echo) {
+      toast.error("No echo found");
+      return;
+    }
     var channel = echo.private("message.sent." + getUser());
+    channel.whisper("typing", { user_id: 2 });
+    channel.listenForWhisper("typing", (e: any) => {
+      alert(e.user_id + " is typing");
+    });
 
     channel.listen("MessageSentEvent", (event: any) => {
       // alert(event.message)
@@ -109,6 +133,7 @@ function ListMessages(props: any) {
         api.util.updateQueryData("getMessages", Number(user_id), (draft) => {
           // var scrollHeight = container.current?.scrollHeight
           // previousScrollHeight.current = 500 || -1;
+          
           draft.messages.push(event.message);
         }),
       ); //dispatch
@@ -144,6 +169,7 @@ function ListMessages(props: any) {
   const renderMessages = useMemo(() => {
     // console.log("Calling from render message",messages)
     if (!messages || !messages.messages) return;
+    const pic = messages.user.profile?.profile_pic;
     // console.log(messages)
     return messages?.messages.map((msg: any, key: number) => {
       // console.log(key)
@@ -151,6 +177,7 @@ function ListMessages(props: any) {
         <MessageBox
           key={key}
           {...msg}
+          pic = {pic}
           current_user={user_id}
           lastMessageRef={lastMessageRef}
         />
@@ -159,45 +186,55 @@ function ListMessages(props: any) {
   }, [messages]);
 
   return (
-    <div className="fixed bg-white border top-[6rem] left-[25rem] w-[50vw] rounded-lg shadow-md px-8 py-5">
-      <div className="center flex justify-between  items-center align-middle">
-        <div className="header justify-center mb-6 gap-5 flex items-center ">
+    <div className=" bg-white flex h-full flex-col dark:bg-black lg:border dark:border-gray-600  w-full  rounded-lg shadow-md px-8 pt-2 lg:pt-5 ">
+      <div className="header flex justify-between  items-center align-middle">
+        <div className=" justify-center mb-6 gap-5 flex items-center ">
           <FontAwesomeIcon
-            onClick={() => navigate("/popMessages")}
-            className="hover:bg-gray-300 active:bg-gray-200 rounded-lg p-3"
+            onClick={() =>  history.back() }
+            className="hover:bg-gray-300 dark:hover:bg-gray-600 active:bg-gray-200 rounded-lg p-3"
             icon={faLeftLong}
           />
-          <FontAwesomeIcon icon={faPerson} size="2xl" />
-          <span className="text-xl font-bold text-gray-600">
+          {
+
+            messages.user.profile?.profile_pic ? <img onClick={()=>navigate('/profile/'+messages.user?.id)} className="h-[60px] cursor-pointer w-[60px] rounded-full" src={"http://localhost:8000/storage/profiles/" + messages.user.profile.profile_pic} /> : <FontAwesomeIcon icon={faPerson} size="2xl" />}
+
+          <span onClick={()=>navigate('/profile/'+messages.user?.id)} className="text-xl cursor-pointer dark:text-gray-200 font-bold text-gray-600">
             {messages?.user != null ? messages.user.name : location?.name}
           </span>
           {/* <span className="text-gray-600 ">{props.active}</span> */}
         </div>
-        <FontAwesomeIcon
+
+
+        {/* <FontAwesomeIcon
           icon={faClose}
           onClick={() => navigate("/")}
           size="2xl"
           className=""
-        />
+        /> */}
       </div>
 
       <div
         ref={container}
-        className="messages h-[60vh] overflow-y-auto break-words"
+        className="messages grow overflow-y-auto break-words"
       >
         <div ref={loader} className="flex justify-center">
           <div ref={circular} className="loader"></div>
         </div>
 
-        {renderMessages}
+        {
+          isMessageLoaded ? <div className=" flex h-full justify-center items-center">
+            <div className="spinner h-32 w-32 shadow-lg rounded-full"></div>
+          </div> : renderMessages
+        }
+
       </div>
-      <form className="type_msg flex items-center gap-3">
+      <form className="footer flex items-center gap-3">
         <textarea
           rows={2}
           onKeyDown={submitFormTextArea}
           onChange={(e) => setMsg(e.target.value)}
           value={msg}
-          className="resize-y h-fit text-wrap bg-gray-200 w-full p-4 rounded-lg focus:outline-gray-300 my-4"
+          className="resize-y h-fit text-wrap dark:bg-gray-700 bg-gray-200 w-full p-4 rounded-lg dark:focus:outline-gray-800 focus:outline-gray-300 my-4"
           placeholder="Enter to type messages"
         />
         <input
@@ -205,7 +242,7 @@ function ListMessages(props: any) {
           value={"Send"}
           disabled={msg ? false : true}
           onClick={submitMessageForm}
-          className="disabled:bg-blue-300 border p-3 rounded-lg bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white"
+          className="disabled:bg-blue-300 border p-3 rounded-lg dark:disabled:bg-gray-500 bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white"
         />
       </form>
     </div>

@@ -52,8 +52,8 @@ export const api = createApi(
         prepareHeaders(headers, api) {
             headers.set('Authorization','Bearer ' + getToken());
             
-        },baseUrl: "http://localhost:8000/api/v1/", headers: [['Content-Type', 'application/json']] }),
-        tagTypes: ['Conversation', 'Message', 'User'],
+        },baseUrl: "http://localhost:8000/api/v1/" }),
+        tagTypes: ['Conversation', 'Message', 'User','Profile','Post'],
         endpoints: (builder) => ({
             getConversations: builder.query<Conversation[], void>({
                 query: () => ({ url: '/conversations', method: 'POST', body: {} }),
@@ -100,6 +100,49 @@ export const api = createApi(
                 
             }),//getMEssages
 
+            createPost:builder.mutation<any,any>({
+                query:(postPayload)=>({url:'/create_post',body:postPayload,method:'POST'}),
+                invalidatesTags:['Post'],
+            
+                transformResponse: (response: any) => {
+                    console.log(response)
+                    return response.data;
+                }
+            }),
+            increaseView:builder.mutation<any,any>({
+                query:(viewPayload)=>({url:'/increase_post_view',body:viewPayload,method:'POST'}),
+                invalidatesTags:['Post'],
+                transformResponse: (response: any) => {
+                    console.log(response)
+                    return response.data;
+                }
+            }),
+            deletePost:builder.mutation<any,any>({
+                query:(deletePayload)=>({url:'/delete_post',body:deletePayload,method:'POST'}),
+                invalidatesTags:['Post'],
+                transformResponse: (response: any) => {
+                    console.log(response)
+                    return response.data;
+                }
+            }),
+            castVote:builder.mutation<any,any>({
+                query:(votePayload)=>({url:'/vote_post',body:votePayload,method:'POST'}),
+                invalidatesTags:['Post'],
+                transformResponse: (response: any) => {
+                    console.log(response);
+                    return response.data;
+                }
+            }),
+            getPost:builder.query<any,any>({
+                query:(getPostPayload)=>({url:'/posts',body:getPostPayload,method:'POST'}),
+                providesTags:['Post'],
+                transformResponse: (response: any) => {
+                    console.log(response)
+                    return response.data;
+                }
+            })
+            ,
+
             sendMessage: builder.mutation<MessagePayLoad, MessageSend>({
                 query: (msgObj) => ({ url: '/message/send', body: msgObj, method: 'POST' }),
                 // providesTags:['Message'],
@@ -111,6 +154,7 @@ export const api = createApi(
                     const patchResult = dispatch(
                         api.util.updateQueryData('getMessages', msg.user_id, (draft) => {
                             // console.log("Starting dispatch");
+                            
                             draft.messages.push({
                                 id: id,
                                 text: msg.text,
@@ -178,6 +222,33 @@ export const api = createApi(
                 transformResponse: (response: any) => { return response.data; }
 
             }),//getUsers
+
+            getUserProfile: builder.query<any, number|string>({
+                query: (user_id:number) => ({ url: '/get_user_profile', body: {user_id:user_id}, method: "POST" }),
+                providesTags: ['Profile'],
+                transformResponse: (response: any) => { return response.data; }
+
+            }),//getUsers
+
+            uploadProfilePic:builder.mutation({
+                query:(formData:FormData)=> ({url:'/upload_profile_pic',body:formData,method:"POST"}),
+                transformResponse:(response:any)=>{return response.data;},
+                invalidatesTags:['Profile']
+            }),
+            uploadCoverPic:builder.mutation({
+                query:(formData:FormData)=> ({url:'/upload_cover_pic',body:formData,method:"POST"}),
+                transformResponse:(response:any)=>{return response.data;},
+                invalidatesTags:['Profile']
+
+            }),
+
+            updateBio:builder.mutation({
+                query:(bio:string)=> ({url:'/update_bio',body:{bio:bio},method:"POST"}),
+                transformResponse:(response:any)=>{return response.data;},
+                invalidatesTags:['Profile']
+
+            }),
+
             logout: builder.mutation<void, void>({
                 query: () => ({ url: '/logout', body: {}, method: "POST" }),
                 invalidatesTags: ['Conversation', 'User', 'Message'],
@@ -191,4 +262,4 @@ export const api = createApi(
     }
 );//createAPi
 
-export const { useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;
+export const { useDeletePostMutation,useCreatePostMutation,useIncreaseViewMutation,useGetPostQuery,useCastVoteMutation,useUpdateBioMutation,useUploadCoverPicMutation,useGetUserProfileQuery,useUploadProfilePicMutation,useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;

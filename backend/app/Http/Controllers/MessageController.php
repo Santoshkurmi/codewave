@@ -16,8 +16,6 @@ use Illuminate\Http\Request;
 class MessageController extends Controller
 {
 
-  
-
     public function send(MessageRequest $request){
         $text = $request->text;
         $sender = auth()->user()->id;
@@ -63,11 +61,11 @@ class MessageController extends Controller
         $conversation = Conversation::findConversation($sender,$user_id);
 
         if(!$conversation){
-            $user = User::find($user_id);
+            $user = User::with("profile")->find($user_id);
             return response()->json(['success'=>true,'msg'=>'No Conversation Found','data'=>['user'=>$user,'messages'=>[]]]);
         }//if no conversation exists
         if(!$lastMessageId){
-            $user = User::find($user_id);
+            $user = User::with("profile")->find($user_id);
             $messages = Message::where('conversation_id',$conversation->id)->orderByDesc('id')->limit(20)->get();
             $resData = ['user'=>$user,'messages'=>$messages];
             return response()->json(['success'=>true,'msg'=>'Fetched successfully','data'=>$resData]);

@@ -69,7 +69,9 @@ function useRegister() {
 
         if (errors == null) {
             toast.success(res.msg,{position:"top-center",autoClose:2000})
-            setUser({token:res.token})
+            setUser({token:res.token,user_id:res.data.id})
+
+            
             return;
         }//if success
 

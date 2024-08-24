@@ -10,13 +10,13 @@ function RightNav() {
        
 ];
     return (
-        <div className="select-none max-h-[80vh] overflow-y-auto  shadow-lg border p-4">
-            <span className="text-3xl font-bold">Trendings Topic</span>
+        <div className="select-none max-h-[80vh] overflow-y-auto dark:border-gray-400  shadow-lg border rounded-lg p-4">
+            <span className="text-3xl font-bold dark:text-gray-300">Trendings Topic</span>
             {
                 links.map((data,key) => {
                     return (
                         <div key={key}
-                         className={"cursor-pointer active:bg-gray-300 hover:bg-gray-200 p-4 transition-all duration-500 ease-in-out gap-5 flex items-center text-blue-500 "} >
+                         className={"cursor-pointer dark:text-gray-200 active:bg-gray-300 hover:bg-gray-200 p-4 transition-all duration-500 ease-in-out gap-5 flex items-center text-blue-500 "} >
                             <span className="">#{data.text}</span>
                         </div>
                     )

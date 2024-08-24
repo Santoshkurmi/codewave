@@ -3,6 +3,8 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -35,5 +37,26 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
 
     Route::post('logout',[AuthController::class,'logout']);
 
-});
+
+    //profiles
+
+    Route::post('upload_profile_pic',[ProfileController::class,'uploadProfilePic']);
+    Route::post('upload_cover_pic',[ProfileController::class,'uploadCoverPic']);
+    Route::post('get_user_profile',[ProfileController::class,'getUser']);
+    Route::post('update_bio',[ProfileController::class,'updateBio']);
+
+
+    //post
+
+    Route::post('create_post',[PostController::class,'create']);
+    Route::post('posts',[PostController::class,'get']);
+    Route::post('increase_post_view',[PostController::class,'increaseView']);
+    Route::post('vote_post',[PostController::class,'vote']);
+    Route::post('delete_post',[PostController::class,'delete']);
+
+
+
+});//api/v1 with sanctum protection
+
+
 

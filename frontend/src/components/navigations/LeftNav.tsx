@@ -1,5 +1,5 @@
 import { faBell, faMessage } from "@fortawesome/free-regular-svg-icons"
-import { faCode, faCross, faSearch, faUserGroup } from "@fortawesome/free-solid-svg-icons"
+import { faCode, faCross, faHome, faPeopleLine, faPerson, faSearch, faUserGroup } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRef, useState } from "react";
 import api from "../../axios/api";
@@ -10,6 +10,7 @@ import useLogin from "../../hooks/useLogin";
 import useLogout from "../../hooks/useLogout";
 import { useLogoutMutation } from "../../api/apiSlice";
 import { toast } from "react-toastify";
+import { faCreativeCommons, faMagento } from "@fortawesome/free-brands-svg-icons";
 
 
 function LeftNav() {
@@ -22,12 +23,16 @@ function LeftNav() {
     const  {loading,logout} = useLogout()
     // const [logout,{isSuccess}] = useLogoutMutation();
     const links = [
-        { text:"Messages",icon: faMessage,path:'/popMessages' },
+        // { text:"Home",icon: faHome,path:'/' },
+        { text:"Messages",icon: faMessage,path:'/messages' },
         { text:"Posts",icon: faCode,path:'/posts' },
-        { text:"Groups",icon: faUserGroup,path:'/groups' },
-        { text:"Notifications",icon: faBell,path:'/notifications' },
+        { text:"Profile",icon: faPerson,path:'/profile' },
+        // { text:"Notifications",icon: faBell,path:'/notifications' },
         { text:"Settings",icon: faSearch,path:'/settings' },
         { text:"LogOut",icon: faCross,path:'/logout' },
+        { text:"People",icon: faPeopleLine },
+        { text:"Mentions",icon: faMagento },
+        { text:"Status",icon: faCreativeCommons },
 ];
 
     // const router = createBrowserRouter([
@@ -38,12 +43,12 @@ function LeftNav() {
     // ])
 
     const toggleMessageScreen = ()=>{
-        if(location.pathname.includes('/popMessages')){
+        if(location.pathname.includes('/messages')){
             setCurrentChat(location.pathname)
             navigate('/')
             return
         }
-        navigate( currentChat ? currentChat: '/popMessages')
+        navigate( currentChat ? currentChat: '/messages')
     }//toogle
 
   async function onClick (source:string){
@@ -51,19 +56,19 @@ function LeftNav() {
         if(source=="/logout"){
             logout()
         }//if logout
-        else if(source=="/popMessages") toggleMessageScreen()
+        else if(source=="/messages") toggleMessageScreen();
+        else if(source=="/profile") navigate('/profile');
     }
     return (
-        <div className="select-none  m-5 shadow-lg border p-4">
+        <div className="select-none dark:border-gray-400 dark:bg-black mx-3 shadow-lg border rounded-lg p-4">
             {/* {openMessage?<Messages/>:<div></div>} */}
             {/* <RouterProvider router={router}/> */}
-            <Outlet/>
             {
                 links.map((data,key) => {
                     return (
                         <div key={key}
                         onClick={()=>onClick(data.path)}
-                         className={ "cursor-pointer active:bg-gray-300 hover:bg-gray-200 p-4 transition-all duration-500 ease-in-out gap-5 flex items-center text-gray-600 "+ ( location.pathname.includes(data.path) ? "bg-gray-300":"") } >
+                         className={ "cursor-pointer rounded-lg dark:hover:bg-gray-700 dark:active:bg-gray-800 active:bg-gray-300 hover:bg-gray-200 p-4 transition-all duration-500 ease-in-out gap-5 flex items-center text-gray-600 dark:text-slate-300 "+ ( location.pathname.includes(data.path) ? "bg-gray-300 dark:bg-gray-600":"") } >
                             <FontAwesomeIcon icon={data.icon} size="lg" />
                             <span>{data.text}</span>
                             
