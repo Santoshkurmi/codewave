@@ -40,6 +40,26 @@ class PostController extends Controller
     public function get(Request $request){
         // $user_id = auth()->user()->id;
         $user_id = $request->user_id;
+        $post_id = $request->post_id;
+
+        if($post_id){
+
+            $post = Post::withCount([
+                'votes as up_count'=>function ($query){
+                    $query->where('type','1');
+                },
+                'votes as down_count'=>function ($query){
+                    $query->where('type','-1');
+                },
+            ])->orderBy('created_at','desc')->where('id',$post_id)->with('user')->with('user.profile')->first();
+            if(!$post){
+               return response()->json(['errors'=>['default'=>'The post is not found']],400);
+            }
+
+            return response()->json(['success'=>true,'data'=>$post]);
+
+        }
+
         if($user_id){
 
             $posts = Post::withCount([

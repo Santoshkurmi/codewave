@@ -2,53 +2,66 @@ import { lazy, useCallback, useEffect, useState } from 'react'
 import SyntaxHighlighter from "react-syntax-highlighter"
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import ReactMarkdown from 'react-markdown'
-import { api, useCreatePostMutation } from '../../api/apiSlice';
+import { api, useCreatePostMutation, useGetPostQuery } from '../../api/apiSlice';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import  {Editor} from '@monaco-editor/react';
+import { useLocation, useParams } from 'react-router-dom';
 
 // const ReactMarkdown = lazy(()=>import('react-markdown'));
 // const SyntaxHighlighter = lazy(()=>import('react-syntax-highlighter'));
 
-function AddPost() {
+function UpdatePost() {
+
+    // const location = useLocation();
+    const  post_id = useParams().post_id || null;
+    // const post = location.state || "";
+    const {isLoading,isError,isSuccess,data:post={}}= useGetPostQuery({post_id});
+    // const data = location.state || {};
+
+    // alert(post_id)
 
     const [text, setText] = useState("");
     const dispatch = useDispatch();
-    
-    const [createPost, { isLoading, isSuccess, isError }] = useCreatePostMutation();
-
-    const sendPost = useCallback(() => {
-        createPost({ content: text });
-    }, [text]);
 
     useEffect(()=>{
-        if(isError) toast.error("Error occured posting the post");
-        else if(isSuccess) {
+        if(isSuccess) setText(post.content);
+    },[isSuccess])
+    
+    // const [createPost, { isLoading, isSuccess, isError }] = useCreatePostMutation();
 
-            // dispatch<any>(
-            //     api.util.updateQueryData('getPost','1',(draft)=>{
+    // const sendPost = useCallback(() => {
+    //     createPost({ content: text });
+    // }, [text]);
+
+    // useEffect(()=>{
+    //     if(isError) toast.error("Error occured posting the post");
+    //     else if(isSuccess) {
+
+    //         // dispatch<any>(
+    //         //     api.util.updateQueryData('getPost','1',(draft)=>{
                     
-            //     })
-            // );
+    //         //     })
+    //         // );
             
 
-            toast.success("Post is posted successfully");
-            history.back();
-        }
-    },[isError,isSuccess]);
+    //         toast.success("Post is posted successfully");
+    //         history.back();
+    //     }
+    // },[isError,isSuccess]);
 
 
     // if (isLoading) return <div>Posting the post. Please wait a while...</div>
-    if (isSuccess) return <div>Post is posted. Go back Now</div>
+    if (isLoading) return <div>Please wait.Loading the post data...</div>
     return (
         <div className=' h-full flex flex-col border rounded-lg p-4 dark:bg-gray-600'>
 
             <div className="title text-center mb-5">
-                <span className='text-2xl font-bold'>Add New Post</span>
+                <span className='text-2xl font-bold'>Update Post</span>
             </div>
 
 
-            <div className="content relative border grow flex dark:border-gray-500 rounded-lg w-full">
+            <div className="content relative border grow overflow-y-auto flex dark:border-gray-500 rounded-lg w-full">
                 {
                     isLoading?
 
@@ -67,7 +80,7 @@ function AddPost() {
                     lineHeight: 22, // Set line height (in pixels)
                     fontLigatures: true, // Enable font ligatures (if supported by the font)
                   }}
-                defaultValue='// Comment in here' language='markdown' className='!text-2xl p-6 w-1/2 dark:bg-gray-600 outline-none rounded-lg' value={text} onChange={(e:any)=>setText(e)} />
+                defaultValue={text} language='markdown' className='grow overflow-y-auto !text-2xl p-6 w-1/2 dark:bg-gray-600 outline-none rounded-lg' value={text} onChange={(e:any)=>setText(e)} />
                 {/* <textarea autoFocus className='p-6 w-1/2 dark:bg-gray-600 outline-none rounded-lg ' value={text} onChange={(e) => setText(e.target.value)} /> */}
                 <ReactMarkdown children={text} components={{
                     code(props) {
@@ -84,14 +97,14 @@ function AddPost() {
                             : <code {...rest} className={className}>{children}</code>
 
                     }
-                }} className="border-l dark:border-gray-500 p-6 w-1/2 dark:bg-gray-600  overflow-auto" />
+                }} className="border-l grow overflow-y-auto dark:border-gray-500 p-6 w-1/2 dark:bg-gray-600  overflow-auto" />
 
             </div>
 
 
             <div className="footer mt-5 text-center mb-5 flex items-center justify-center gap-10">
                 <button className='text-2xl font-bold bg-red-600 px-6 hover:bg-red-700 active:bg-red-800 py-1 rounded-lg'>Cancel</button>
-                <button onClick={sendPost} className='text-2xl font-bold bg-green-600 px-6 hover:bg-green-700 active:bg-green-800 py-1 rounded-lg'>Post</button>
+                <button  className='text-2xl font-bold bg-green-600 px-6 hover:bg-green-700 active:bg-green-800 py-1 rounded-lg'>Update</button>
             </div>
 
 
@@ -104,4 +117,4 @@ function AddPost() {
 // }
 
 
-export default AddPost
+export default UpdatePost;

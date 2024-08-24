@@ -49,6 +49,10 @@ function Post({ user, created_at,content, user_id, id: post_id, down_count, up_c
                        {
                      user_id == logined_user_id ?   <li onClick={()=>{deletePost({post_id});setIsPopup(false);}} className="p-2 pl-2 active:dark:bg-gray-600 active:bg-gray-300 dark:hover:bg-gray-500 hover:bg-gray-200 rounded-lg">Delete</li>  :null
                        } 
+
+{
+                     user_id == logined_user_id ?   <li onClick={()=>{navigate('/update_post/'+post_id);setIsPopup(false);}} className="p-2 pl-2 active:dark:bg-gray-600 active:bg-gray-300 dark:hover:bg-gray-500 hover:bg-gray-200 rounded-lg">Edit</li>  :null
+                       } 
                            
                        <li onClick={()=>setIsPopup(false)} className="p-2 pl-2 active:dark:bg-gray-600 active:bg-gray-300 dark:hover:bg-gray-500 hover:bg-gray-200 rounded-lg">Save</li>
                             

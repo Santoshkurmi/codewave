@@ -19,6 +19,7 @@ import Feeds from "./components/feed/Feeds";
 import AddPost from "./components/add_post/AddPost";
 import { store } from './api/store.ts'
 import { Provider } from "react-redux";
+import UpdatePost from "./components/add_post/UpdatePost.tsx";
 
 
 function App() {
@@ -47,6 +48,11 @@ function App() {
         {
           path: "/add_post",
           element: <AddPost />,
+
+        },
+        {
+          path: "/update_post/:post_id",
+          element: <UpdatePost/>,
 
         },
         {
