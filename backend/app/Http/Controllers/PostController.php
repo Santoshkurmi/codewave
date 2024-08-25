@@ -26,6 +26,24 @@ class PostController extends Controller
 
     }//create post
 
+    public function update(Request $request){
+
+        $content = $request->content;
+        $post_id = $request->post_id;
+        $user_id = auth()->user()->id; 
+        if(!$content || strlen($content)<10){
+             return response()->json(['errors'=>['content'=>'Post must be more than 10 chars longs']],400);
+        }//if error
+ 
+        $isUpdated = Post::where('id',$post_id)->where('user_id',$user_id)->update(['content'=>$content]);
+        if(!$isUpdated){
+             return response()->json(['success'=>false,'errors'=>['default'=>'Something went wrong Updating the post,Please try again']],400);
+        }
+ 
+        return response()->json(['success'=>false,'data'=>[] ]);
+ 
+     }//create post
+
     public function delete(Request $request){
         $post_id =$request->post_id;
         $user_id = auth()->user()->id;
@@ -36,6 +54,8 @@ class PostController extends Controller
         }
         else return response()->json(['success'=>true,'msg'=>'Deleted the post','data'=>[]]);
     }//delete
+
+    
 
     public function get(Request $request){
         // $user_id = auth()->user()->id;

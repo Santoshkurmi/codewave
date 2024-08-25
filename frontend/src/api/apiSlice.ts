@@ -109,6 +109,15 @@ export const api = createApi(
                     return response.data;
                 }
             }),
+            updatePost:builder.mutation<any,any>({
+                query:(postPayload)=>({url:'/update_post',body:postPayload,method:'POST'}),
+                invalidatesTags:['Post'],
+            
+                transformResponse: (response: any) => {
+                    console.log(response)
+                    return response.data;
+                }
+            }),
             increaseView:builder.mutation<any,any>({
                 query:(viewPayload)=>({url:'/increase_post_view',body:viewPayload,method:'POST'}),
                 invalidatesTags:['Post'],
@@ -262,4 +271,4 @@ export const api = createApi(
     }
 );//createAPi
 
-export const { useDeletePostMutation,useCreatePostMutation,useIncreaseViewMutation,useGetPostQuery,useCastVoteMutation,useUpdateBioMutation,useUploadCoverPicMutation,useGetUserProfileQuery,useUploadProfilePicMutation,useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;
+export const { useUpdatePostMutation,useDeletePostMutation,useCreatePostMutation,useIncreaseViewMutation,useGetPostQuery,useCastVoteMutation,useUpdateBioMutation,useUploadCoverPicMutation,useGetUserProfileQuery,useUploadProfilePicMutation,useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;

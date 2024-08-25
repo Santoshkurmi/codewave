@@ -2,7 +2,7 @@ import { lazy, useCallback, useEffect, useState } from 'react'
 import SyntaxHighlighter from "react-syntax-highlighter"
 import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import ReactMarkdown from 'react-markdown'
-import { api, useCreatePostMutation, useGetPostQuery } from '../../api/apiSlice';
+import { api, useCreatePostMutation, useGetPostQuery, useUpdatePostMutation } from '../../api/apiSlice';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import  {Editor} from '@monaco-editor/react';
@@ -28,27 +28,27 @@ function UpdatePost() {
         if(isSuccess) setText(post.content);
     },[isSuccess])
     
-    // const [createPost, { isLoading, isSuccess, isError }] = useCreatePostMutation();
+    const [updatePost, { isLoading:isPostUpdating, isSuccess:isPostUpdated, isError:isPostError }] = useUpdatePostMutation();
 
     // const sendPost = useCallback(() => {
     //     createPost({ content: text });
     // }, [text]);
 
-    // useEffect(()=>{
-    //     if(isError) toast.error("Error occured posting the post");
-    //     else if(isSuccess) {
+    useEffect(()=>{
+        if(isPostError) toast.error("Error occured posting the post");
+        else if(isPostUpdated) {
 
-    //         // dispatch<any>(
-    //         //     api.util.updateQueryData('getPost','1',(draft)=>{
+            // dispatch<any>(
+            //     api.util.updateQueryData('getPost','1',(draft)=>{
                     
-    //         //     })
-    //         // );
+            //     })
+            // );
             
 
-    //         toast.success("Post is posted successfully");
-    //         history.back();
-    //     }
-    // },[isError,isSuccess]);
+            toast.success("Post is posted successfully");
+            history.back();
+        }
+    },[isPostError,isPostUpdated]);
 
 
     // if (isLoading) return <div>Posting the post. Please wait a while...</div>
@@ -63,7 +63,7 @@ function UpdatePost() {
 
             <div className="content relative border grow overflow-y-auto flex dark:border-gray-500 rounded-lg w-full">
                 {
-                    isLoading?
+                    isPostUpdating?
 
                          <div className="spinner w-[100px] h-[100px] absolute top-1/2 left-1/2"></div>
                          :
@@ -104,7 +104,7 @@ function UpdatePost() {
 
             <div className="footer mt-5 text-center mb-5 flex items-center justify-center gap-10">
                 <button className='text-2xl font-bold bg-red-600 px-6 hover:bg-red-700 active:bg-red-800 py-1 rounded-lg'>Cancel</button>
-                <button  className='text-2xl font-bold bg-green-600 px-6 hover:bg-green-700 active:bg-green-800 py-1 rounded-lg'>Update</button>
+                <button onClick={()=>updatePost({post_id,content:text})}  className='text-2xl font-bold bg-green-600 px-6 hover:bg-green-700 active:bg-green-800 py-1 rounded-lg'>Update</button>
             </div>
 
 

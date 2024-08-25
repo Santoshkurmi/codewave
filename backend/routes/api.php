@@ -53,6 +53,7 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
     Route::post('increase_post_view',[PostController::class,'increaseView']);
     Route::post('vote_post',[PostController::class,'vote']);
     Route::post('delete_post',[PostController::class,'delete']);
+    Route::post('update_post',[PostController::class,'update']);
 
 
 
