@@ -1,21 +1,22 @@
 import { useEffect, useRef, useState } from "react"
-import Feeds from "./feed/Feeds"
 import Header from "./navigations/Header"
 import LeftNav from "./navigations/LeftNav"
-import LeftNavBottom from "./navigations/LeftNavBottom"
 import PhoneNav from "./navigations/PhoneNav"
 import RightNav from "./navigations/RightNav"
-import { getToken } from "../axios/tokens"
-import { Outlet, useNavigate } from "react-router-dom"
+import { Outlet } from "react-router-dom"
 import EchoConfig from "../echo/echoConfig"
+import ConfigStore from "../zustand/ConfigStore"
 
 function Home() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLDivElement>(null);
   const [headerHidden,setHeaderHidden] = useState(false);
   const previousTop = useRef(0);
-  const navigate = useNavigate()
+  // const [isRightNavHidden,setRightNavHidden] = useState(false);
+  const {isRightNavHidden , isHeaderNavHidden,isLeftNavHidden, } =  ConfigStore();
+  // const {setRightNav} = ConfigStore();
+
   useEffect(()=>{
+    // alert(isRightNavHidden)
     
    const scrollContainer =  scrollContainerRef.current;
    if(!scrollContainer) return;
@@ -42,6 +43,8 @@ function Home() {
 
    }//callback
 
+  
+
    scrollContainer.addEventListener('scroll',scrollCallback);
 
    return ()=>scrollContainer.removeEventListener('scroll',scrollCallback);
@@ -50,7 +53,7 @@ function Home() {
     
   },[]) 
   return (
-    <div className={"home transition-[top] fixed left-0  flex px-0 lg:px-6 w-full  md:justify-between "+(headerHidden? "top-0":'top-[4rem] lg:top-[6rem]')}>
+    <div className={"home transition-[top] fixed left-0  flex px-0 lg:px-6 w-full  md:justify-between "+(headerHidden || isHeaderNavHidden? "top-0":'top-[4rem] lg:top-[6rem]')}>
         
         <Header header = {headerHidden}/>
         <EchoConfig />
@@ -60,11 +63,11 @@ function Home() {
           <PhoneNav/>
         </div> */}
 
-        <div className="left mt-6  min-w-fit left-0 w-[20vw] hidden lg:block">
+        <div className={"left mt-6  min-w-fit left-0 w-[20vw] hidden "+ (isLeftNavHidden ? " ":"lg:block")}>
           <LeftNav/>
           {/* <LeftNavBottom/> */}
         </div>
-        <div className={"center flex transition-[top] duration-1000 flex-col   w-[100vw]  lg:w-[60vw] "+(headerHidden? 'h-[100vh]':'h-[calc(100vh-5rem)] mt-6 lg:h-[calc(100vh-8rem)]')}>
+        <div className={"center flex transition-[top] duration-1000 flex-col   w-[100vw]   "+(isRightNavHidden && isLeftNavHidden ? ' lg:w-[100vw] ':(isRightNavHidden?' lg:w-[80vw] ': ' lg:w-[60vw] ') ) +(headerHidden || isHeaderNavHidden? ' h-[100vh]':'h-[calc(100vh-5rem)] mt-6 lg:h-[calc(100vh-8rem)]')}>
           {/* <h1>ello</h1> */}
           <div ref={scrollContainerRef} className="out grow overflow-y-auto">
             <Outlet/>
@@ -76,7 +79,7 @@ function Home() {
           </div>
 
         </div>
-        <div className="right  mt-6 mx-3  right-0 w-[20vw] hidden lg:block">
+        <div className={"right  mt-6 mx-3  right-0  hidden  "+ (isRightNavHidden? 'w-[0] hidden':'w-[20vw] lg:block')}>
           <RightNav/>    
         </div>
         

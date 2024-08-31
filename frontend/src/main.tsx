@@ -4,7 +4,9 @@ import './index.css'
 import  logo from './assets/logo.svg';
 
 const App = lazy(()=>import('./App.tsx'));
+
 const theme = localStorage.getItem("theme");
+
 if(theme=="dark"){
   document.documentElement.classList.add('dark');
 }
@@ -12,7 +14,6 @@ else{
   document.documentElement.classList.remove('dark');
 
 }
-// const Provider =lazy(()=>import('react-redux'));
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   // <React.StrictMode>

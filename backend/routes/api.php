@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CodeRunner;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostController;
@@ -55,6 +56,13 @@ Route::prefix('v1')->middleware(['auth:sanctum'])->group(function(){
     Route::post('delete_post',[PostController::class,'delete']);
     Route::post('update_post',[PostController::class,'update']);
 
+
+    
+    Route::post('store_image',[PostController::class,'storePostImage']);
+
+    
+
+    Route::post('run_code',[CodeRunner::class,'handleCodeRequest']);
 
 
 });//api/v1 with sanctum protection

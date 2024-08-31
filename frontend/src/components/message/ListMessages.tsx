@@ -1,7 +1,10 @@
 import {
   faClose,
+  faCode,
   faLeftLong,
   faPerson,
+  faShare,
+  faToolbox,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -19,6 +22,10 @@ import { getUser } from "../../axios/tokens";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import Echo, { Channel } from "laravel-echo";
+import { faMessage } from "@fortawesome/free-regular-svg-icons";
+import CodeMessageEditor from "./CodeMessageEditor";
+import CodeMessageEditing from "./CodeMessageEditing";
+import ConfigStore from "../../zustand/ConfigStore";
 
 function ListMessages(props: any) {
   const { user_id } = useParams();
@@ -27,6 +34,8 @@ function ListMessages(props: any) {
 
   const navigate = useNavigate();
   const [msg, setMsg] = useState("");
+  const {setRightNav,setLeftNav,setHeaderNav} = ConfigStore();
+
   // const { loading, messages, user, getMessages, sendMessage } = useMessage();
   const {
     data: messages = { user: {}, messages: [], isNoMoreMsg: false },
@@ -46,6 +55,8 @@ function ListMessages(props: any) {
   const container = useRef<HTMLDivElement>(null);
   const loader = useRef<HTMLDivElement>(null);
   var previousScrollHeight = useRef<number>(-1);
+  const [isCodeEditing,setCodeEditing] = useState(false);
+  const [markdown,setMarkdown] = useState(null);
   // var [disableScrollListener,setDisableScroll] = useState(false)
 
   var echoChannelRef = useRef<Channel>(null);
@@ -115,6 +126,7 @@ function ListMessages(props: any) {
   useEffect(() => {
     // alert("y")
     // return;
+    setRightNav(true);
     const echo: Echo = (window as any).echo;
     if (!echo) {
       toast.error("No echo found");
@@ -141,6 +153,8 @@ function ListMessages(props: any) {
 
     return () => {
       channel.stopListening("MessageSentEvent");
+    setRightNav(false);
+
     };
   }, []);
 
@@ -158,6 +172,7 @@ function ListMessages(props: any) {
 
   const submitMessageForm = useCallback(
     (e: any) => {
+    // alert(markdown)
       e.preventDefault();
 
       sendMessage({ user_id: Number(user_id), text: msg });
@@ -165,6 +180,14 @@ function ListMessages(props: any) {
     },
     [msg],
   );
+
+  useEffect(()=>{
+    // alert("es");
+
+    if(!markdown)return;
+    sendMessage({ user_id: Number(user_id), text: '',markdown:markdown });
+
+  },[markdown]);
 
   const renderMessages = useMemo(() => {
     // console.log("Calling from render message",messages)
@@ -187,6 +210,14 @@ function ListMessages(props: any) {
 
   return (
     <div className=" bg-white flex h-full flex-col dark:bg-black lg:border dark:border-gray-600  w-full  rounded-lg shadow-md px-8 pt-2 lg:pt-5 ">
+     
+     {
+        isCodeEditing &&
+        <div className="absolute h-[100%] z-50 w-[90%] top-0 left-[5%] bg-white">
+          <CodeMessageEditing setCodeEditingVisiblity = {setCodeEditing} setMarkdown= {setMarkdown}/>
+        </div> 
+     }
+     
       <div className="header flex justify-between  items-center align-middle">
         <div className=" justify-center mb-6 gap-5 flex items-center ">
           <FontAwesomeIcon
@@ -229,6 +260,7 @@ function ListMessages(props: any) {
 
       </div>
       <form className="footer flex items-center gap-3">
+        <FontAwesomeIcon onClick={()=>setCodeEditing(!isCodeEditing)} icon={faToolbox} size="2xl" className="text-gray-400 hover:text-gray-500 active:text-gray-600" />
         <textarea
           rows={2}
           onKeyDown={submitFormTextArea}

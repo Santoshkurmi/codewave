@@ -23,7 +23,7 @@ class MessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'text'=>'required|min:1',
+            // 'text'=>'required|min:1',
             'user_id'=>'required|exists:users,id'
         //     'conversation_id'=>'required|exists:conversations,id'
         ];

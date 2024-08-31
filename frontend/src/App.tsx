@@ -23,12 +23,8 @@ import UpdatePost from "./components/add_post/UpdatePost.tsx";
 
 
 function App() {
-  //There are so many things happening in this world
   const token = userStore().user.token;
-  // const navigate = useNavigate();
 
-  // echo.join('message.sent.1')
-  // pusherJs
   const router = createBrowserRouter([
     {
       path: "/",
@@ -83,8 +79,6 @@ function App() {
     },
   ]);
   console.log("Bye");
-  // console.log("HEllo sfljl");
-  // if (token)
 
   return (
     <Provider store={store}>

@@ -18,6 +18,7 @@ class MessageController extends Controller
 
     public function send(MessageRequest $request){
         $text = $request->text;
+        $markdown = $request->markdown;
         $sender = auth()->user()->id;
         $receiver = $request->user_id;
         // $conversation_id = $request->conversation_id;
@@ -33,7 +34,7 @@ class MessageController extends Controller
             ConversationUser::createNewConversationUsers($conversation->id,$sender,$receiver);
         }//if conversation is not found ,then create new one
 
-        $message = Message::create(['text'=>$text,'user_id'=>$sender,'conversation_id'=>$conversation->id]);
+        $message = Message::create(['markdown'=>$markdown,'text'=>$text,'user_id'=>$sender,'conversation_id'=>$conversation->id]);
         // broadcast(new MessageSentEvent($message,$receiver));
         MessageSentEvent::dispatch($message,$receiver);
         // MessageJob::dispatch($message,$receiver);

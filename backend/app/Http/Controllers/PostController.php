@@ -3,12 +3,41 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\PostPhoto;
 use App\Models\Vote;
 use Illuminate\Http\Request;
 use Response;
 
 class PostController extends Controller
 {
+
+    public function storePostImage(Request $request){
+
+        // $user_id = $request->post_id;
+        $post_id = 1;
+
+        if(!$request->hasFile('image')){
+            return response()->json([ 'errors'=>['default'=>"Please provide image"] ],400);
+        }
+
+        $file = $request->file('image');
+        $filename = hash('sha256', $file->getClientOriginalName()." ".time() ).".".$file->getClientOriginalExtension();
+
+        $path = $file->storeAs('public/post_photos',$filename);
+
+        if(!$path)
+            return response()->json([ 'errors'=>['default'=>"Could not upload the image."],400 ]);
+
+        $photo = PostPhoto::create(['image'=>$filename,'post_id'=>$post_id]);
+
+        return response()->json(['data'=>$photo]);
+
+
+        
+
+    }//
+
+
     public function create(Request $request){
 
        $content = $request->content;

@@ -45,5 +45,6 @@ async function send(path:string,body:any={},method:string|null='POST'){
     send
 }
 
+export {send};
 
 export default api;

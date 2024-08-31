@@ -1,15 +1,19 @@
 import { faArrowDown, faArrowUp, faEye, faPerson } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { lazy, useCallback, useMemo, useState } from "react";
-import SyntaxHighlighter from "react-syntax-highlighter"
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { lazy, useCallback, useEffect, useMemo, useState } from "react";
 import ReactMarkdown from 'react-markdown'
 import { useNavigate } from "react-router-dom";
+import {PrismAsyncLight as SyntaxHighlighter} from "react-syntax-highlighter"
+import { ghcolors as white } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { dracula as dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { faUps } from "@fortawesome/free-brands-svg-icons";
 import { api, useCastVoteMutation, useDeletePostMutation } from "../../api/apiSlice";
 import { useDispatch } from "react-redux";
 import { getUser } from "../../axios/tokens";
 import { formatDate } from "../../helpers/DateTimeConverter";
+import ConfigStore from "../../zustand/ConfigStore";
+import MarkdownShower from "../markdown/MarkdownShower";
+
 
 // const ReactMarkdown = lazy(()=>import('react-markdown'));
 // const SyntaxHighlighter = lazy(()=>import('react-syntax-highlighter'));
@@ -17,12 +21,23 @@ import { formatDate } from "../../helpers/DateTimeConverter";
 function Post({ user, created_at,content, user_id, id: post_id, down_count, up_count, view_count }: any) {
 
     //   return <div>{props.content}</div>
+
+   
     const logined_user_id = useMemo(() => getUser(), []);
     const [castVote, { isLoading, isSuccess, isError }] = useCastVoteMutation();
-   const [deletePost,{isLoading:isDeleting,isSuccess:isPostDeleted,isError:isDeleteError}] = useDeletePostMutation();
+    const [deletePost,{isLoading:isDeleting,isSuccess:isPostDeleted,isError:isDeleteError}] = useDeletePostMutation();
     const profile_pic = user.profile?.profile_pic ?? null;
     const navigate = useNavigate();
     const [isPopup, setIsPopup] = useState(false);
+    const isDark = ConfigStore().isDark;
+
+
+    useEffect(()=>{
+        // setRightNav(true);
+        // return ()=>setRightNav(false);
+    },[])
+
+    // setRightNav(true);
 
 
 
@@ -44,7 +59,7 @@ function Post({ user, created_at,content, user_id, id: post_id, down_count, up_c
                 <div className="div active:opacity-50 ml-auto p-4 rounded-full hover:opacity-80 cursor-pointer" onClick={() => setIsPopup(!isPopup)}>:</div>
                 {
 
-                 isPopup?   <div className="select-none options absolute w-[200px] px-2 py-5 rounded-lg right-0 top-[100%] bg-white shadow-lg border  dark:bg-gray-600">
+                 isPopup?   <div className="z-50 select-none options absolute w-[200px] px-2 py-5 rounded-lg right-0 top-[100%] bg-white shadow-lg border  dark:bg-gray-600">
                         <ul>
                        {
                      user_id == logined_user_id ?   <li onClick={()=>{deletePost({post_id});setIsPopup(false);}} className="p-2 pl-2 active:dark:bg-gray-600 active:bg-gray-300 dark:hover:bg-gray-500 hover:bg-gray-200 rounded-lg">Delete</li>  :null
@@ -65,26 +80,19 @@ function Post({ user, created_at,content, user_id, id: post_id, down_count, up_c
             </div>
 
             <div className="title-time flex justify-between">
-                <div className="title font-bold dark:text-slate-300 text-xl text-gray-700">{"Title will be here"}</div>
+                <div className="title font-bold dark:text-slate-300 text-xl text-gray-700"></div>
                 <div className="time dark:text-slate-300">{formatDate(created_at)}</div>
             </div>
             <div className="description dark:text-slate-300 text-lg">
-                <ReactMarkdown children={content} components={{
-                    code(props) {
-                        const { children, className, node, ...rest } = props;
-                        const match = /language-(\w+)/.exec(className || '');
-                        return match ? <SyntaxHighlighter
-                            {...rest}
-                            PreTag="div"
-                            children={String(children).replace(/\n$/, '')}
-                            language={match[1]}
-                            style={docco}
-                            className="!rounded-lg !p-4"
-                        />
-                            : <code {...rest} className={className}>{children}</code>
+                
+                
+               
+                
+            <MarkdownShower text={content} isPreview = {true} />
 
-                    }
-                }} />
+
+
+                
             </div>
             {/* <div className="code p-3 dark:text-slate-300 dark:bg-gray-500 bg-gray-300 rounded-lg">
             {props.code}
