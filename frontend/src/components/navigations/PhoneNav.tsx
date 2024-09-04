@@ -18,7 +18,7 @@ function PhoneNav() {
         setActive(source)
     }
     return (
-        <div className="select-none h-[5rem]  flex flex-row justify-between mb-0  mt-0 shadow-lg  p-4">
+        <div className="select-none pb-10 pt-4 px-5  flex flex-row justify-between mb-0  mt-0 shadow-lg">
             {
                 links.map((data, key) => {
                     return (

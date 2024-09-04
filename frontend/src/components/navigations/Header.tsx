@@ -8,7 +8,7 @@ import { getUser } from "../../axios/tokens"
 import { useEffect, useState } from "react"
 import ConfigStore from "../../zustand/ConfigStore"
 
-function Header({header}:any) {
+function Header() {
   const navigate = useNavigate();
   const { isLoading,isFetching, data: user, isSuccess: isUserLoaded, isError: isProfileError } = useGetUserProfileQuery(getUser() as string);
   const profilePlaceholder = "https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png";
@@ -37,7 +37,7 @@ function Header({header}:any) {
   
   return (
     <div 
-    className={"h-[5rem] transition-['top'] z-50 bg-white dark:bg-black fixed left-0  right-0 select-none shadow-sm dark:shadow-slate-400 rounded-md flex items-center justify-between px-0 lg:px-8 "+ (header || isHeaderNavHidden? '-top-[6rem]':"top-0")}>
+    className={"h-[5rem] transition-['top'] z-50 bg-white dark:bg-black left-0  right-0 select-none shadow-sm dark:shadow-slate-400 rounded-md flex items-center justify-between px-0 lg:px-8 "}>
         <div className="left flex items-center gap-2">            
             <img src={logo} onClick={()=>navigate('/')} className="cursor-pointer"  width={"50px"} alt="Logo" />
             <span className="pl-0 text-gray-700 dark:text-slate-300 font-bold text-xl">CodeWave</span>

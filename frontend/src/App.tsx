@@ -4,7 +4,7 @@ import {
   createBrowserRouter,
   useNavigate,
 } from "react-router-dom";
-import Home from "./components/Home";
+import Home from "./components/home/Home.tsx";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import userStore from "./zustand/UserStore";
@@ -85,7 +85,7 @@ function App() {
 
       <div className="dark:bg-gray-700">
         <ToastContainer
-          autoClose={2000}
+          autoClose={1000}
           position={"top-center"}
         />
         <RouterProvider router={router} />
