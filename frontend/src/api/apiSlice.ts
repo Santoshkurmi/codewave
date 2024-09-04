@@ -118,6 +118,7 @@ export const api = createApi(
                     return response.data;
                 }
             }),
+          
             increaseView:builder.mutation<any,any>({
                 query:(viewPayload)=>({url:'/increase_post_view',body:viewPayload,method:'POST'}),
                 invalidatesTags:['Post'],

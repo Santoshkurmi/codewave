@@ -24,6 +24,7 @@ function LeftNav() {
     // const [logout,{isSuccess}] = useLogoutMutation();
     const links = [
         // { text:"Home",icon: faHome,path:'/' },
+        // { text:"Messages",icon: faMessage,path:'/messages' },
         { text:"Messages",icon: faMessage,path:'/messages' },
         { text:"Posts",icon: faCode,path:'/posts' },
         { text:"Profile",icon: faPerson,path:'/profile' },

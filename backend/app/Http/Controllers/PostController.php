@@ -84,6 +84,7 @@ class PostController extends Controller
         else return response()->json(['success'=>true,'msg'=>'Deleted the post','data'=>[]]);
     }//delete
 
+
     
 
     public function get(Request $request){

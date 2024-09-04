@@ -106,7 +106,7 @@ function UpdatePost() {
     useEffect(()=>{
         setRightNav(true);
         setLeftNav(true);
-        setHeaderNav(true);
+        // setHeaderNav(true);
         // localStorage.setItem('post',text);
 
         const storeInterval = setInterval(()=>{
@@ -120,7 +120,7 @@ function UpdatePost() {
             clearInterval(storeInterval);
             setRightNav(false)
             setLeftNav(false)
-            setHeaderNav(false)
+            // setHeaderNav(false)
         };
     },[])
     

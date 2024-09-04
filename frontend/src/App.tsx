@@ -20,6 +20,7 @@ import AddPost from "./components/add_post/AddPost";
 import { store } from './api/store.ts'
 import { Provider } from "react-redux";
 import UpdatePost from "./components/add_post/UpdatePost.tsx";
+import ViewAnswers from "./components/post/ViewAnswers.tsx";
 
 
 function App() {
@@ -51,6 +52,12 @@ function App() {
           element: <UpdatePost/>,
 
         },
+        {
+          path: "/post/:post_id",
+          element: <ViewAnswers/>,
+
+        },
+
         {
           path: "messages",
           element: <Messages />,
