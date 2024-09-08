@@ -7,13 +7,11 @@ import {
 import Home from "./components/home/Home.tsx";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
-import userStore from "./zustand/UserStore";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Messages from "./components/message/Messages";
 import ListMessages from "./components/message/ListMessages";
 import Test from "./tests/Test";
-import { createElement } from "react";
 import Profile from "./components/profile/profile";
 import Feeds from "./components/feed/Feeds";
 import AddPost from "./components/add_post/AddPost";
@@ -21,10 +19,20 @@ import { store } from './api/store.ts'
 import { Provider } from "react-redux";
 import UpdatePost from "./components/add_post/UpdatePost.tsx";
 import ViewAnswers from "./components/post/ViewAnswers.tsx";
+import useAuthStore from "./zustand/AuthStore.ts";
 
 
+
+/**
+ * This is the main App component. It handles the routing for the entire
+ * application. It renders different components depending on the current
+ * route. If the user is logged in, it renders the Home component. If the
+ * user is not logged in, it renders the Login component. If the route is
+ * not recognized, it renders a 404 error page.
+ * @returns {JSX.Element} The App component
+ */
 function App() {
-  const token = userStore().user.token;
+  const {token} = useAuthStore();
 
   const router = createBrowserRouter([
     {

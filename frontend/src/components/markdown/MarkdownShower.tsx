@@ -4,7 +4,7 @@ import MarkdownSyntaxHighlighter from "./MarkdownSyntaxHighligher";
 
 
 
-function MarkdownShower({ text, isPreview }: any) {
+function MarkdownShower({ text, isPreview=true }: any) {
     return (
 
         <ReactMarkdown children={text} remarkPlugins={[remarkGfm]} components={{
@@ -43,7 +43,7 @@ function MarkdownShower({ text, isPreview }: any) {
 
             }
         }}
-            className={"border-l text-2xl dark:border-gray-500 p-6 w-full dark:bg-gray-600   overflow-y-auto " + (isPreview ? "block" : 'hidden')} />
+            className={"border-l rounded-lg text-2xl dark:border-gray-500 p-6 w-full dark:bg-gray-600   overflow-y-auto " + (isPreview ? "block" : 'hidden')} />
     )
 }
 

@@ -10,11 +10,11 @@ import { Editor, Monaco, useMonaco } from '@monaco-editor/react';
 import ConfigStore from '../../zustand/ConfigStore';
 import axios from 'axios';
 import { send } from '../../axios/api';
-import { getToken } from '../../axios/tokens';
 import { editor as editorType } from 'monaco-editor';
 import { useParams } from 'react-router-dom';
 import MarkdownShower from '../markdown/MarkdownShower';
 import MarkdownEditor from '../markdown/MarkdownEditor';
+import useAuthStore from '../../zustand/AuthStore';
 
 // const ReactMarkdown = lazy(()=>import('react-markdown'));
 // const SyntaxHighlighter = lazy(()=>import('react-syntax-highlighter'));
@@ -28,6 +28,7 @@ function CodeMessageEditing({ setCodeEditingVisiblity, setMarkdown }: any) {
     const isDark = ConfigStore().isDark;
     const fileRef = useRef<HTMLInputElement>(null);
     const image = useRef('');
+    const token = useAuthStore().token;
     var editorRef = useRef<editorType.IStandaloneCodeEditor>(null);
     const [isPreview, setPreview] = useState(true);
 
@@ -137,7 +138,7 @@ function CodeMessageEditing({ setCodeEditingVisiblity, setMarkdown }: any) {
                 const response = await axios.post('http://localhost:8000/api/v1/store_image', form, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'Authorization': 'Bearer ' + getToken(),
+                        'Authorization': 'Bearer ' + token,
                     },
                 });
 

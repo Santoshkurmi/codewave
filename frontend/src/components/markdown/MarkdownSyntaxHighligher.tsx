@@ -1,17 +1,24 @@
 import ConfigStore from "../../zustand/ConfigStore";
 import { ghcolors as white } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { dracula as dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { PrismAsyncLight as SyntaxHighlighter } from "react-syntax-highlighter"
+import  SyntaxHighlighter  from "react-syntax-highlighter/dist/esm/prism-light";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClipboard } from "@fortawesome/free-regular-svg-icons";
 import { faPlay } from "@fortawesome/free-solid-svg-icons";
-import { useRef, useState } from "react";
+import jsx from 'react-syntax-highlighter/dist/esm/languages/prism/jsx';
+import { lazy, useRef, useState } from "react";
 import axios from "axios";
-import { getToken } from "../../axios/tokens";
+import useAuthStore from "../../zustand/AuthStore";
+
+
+// const SyntaxHighlighter = lazy(()=>import('react-syntax-highlighter/dist/esm/prism-light'));
+
+SyntaxHighlighter.registerLanguage('jsx', jsx);
 
 function MarkdownSyntaxHighlighter({ rest, children, match, isLine, lineErrors, lineNumber }: any) {
   const isDark = ConfigStore().isDark;
   const language = match[1];
+  const token = useAuthStore().token;
   const [output, setOutput] = useState<string|null>(null);
 
   console.log(language);
@@ -22,7 +29,7 @@ function MarkdownSyntaxHighlighter({ rest, children, match, isLine, lineErrors, 
     const response = await axios.post('http://localhost:8000/api/v1/run_code', {language:language,code:children}, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization':'Bearer '+getToken(),
+        'Authorization':'Bearer '+token,
       },
     });
 
@@ -31,7 +38,7 @@ function MarkdownSyntaxHighlighter({ rest, children, match, isLine, lineErrors, 
 
   return (
 
-    <div className="code_markdown  p-2 relative">
+    <div className="code_markdown rounded-lg  p-2 relative">
       <FontAwesomeIcon onClick={() => navigator.clipboard.writeText(children)} className="copy hover:opacity-70 active:opacity-50 cursor-pointer p-1 absolute top-8 right-8 hidden" icon={faClipboard} />
       <FontAwesomeIcon onClick={runCodeFromServer} className="copy hidden hover:opacity-70 active:opacity-50 cursor-pointer p-1 absolute top-8 right-20 " icon={faPlay} />
 

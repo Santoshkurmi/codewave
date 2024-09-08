@@ -20,8 +20,8 @@ function LeftNav() {
     const [currentChat,setCurrentChat] = useState("");
     const navigate = useNavigate()
     const location = useLocation()
-    const  {loading,logout} = useLogout()
-    // const [logout,{isSuccess}] = useLogoutMutation();
+    // const  {loading,logout} = useLogout()
+    const [logout,{isSuccess}] = useLogoutMutation();
     const links = [
         // { text:"Home",icon: faHome,path:'/' },
         // { text:"Messages",icon: faMessage,path:'/messages' },

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->text("text");
+            $table->boolean('is_markdown')->default(false);
             $table->unsignedBigInteger("user_id");
             $table->foreign("user_id")->references("id")->on('users')->onDelete('cascade');
             $table->unsignedBigInteger("conversation_id");

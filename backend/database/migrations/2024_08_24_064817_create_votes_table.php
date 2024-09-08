@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('votes', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('voteable_id');
+            $table->enum('voteable_type',['post','answer'])->default('post');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('post_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
             $table->enum('type',['1','-1']);
-            $table->unique(['user_id','post_id']);
+            $table->unique(['user_id','voteable_id','voteable_type']);
             $table->timestamps();
         });
     }

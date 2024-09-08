@@ -2,19 +2,20 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useGetPostQuery, useGetUserProfileQuery, useUpdateBioMutation, useUploadCoverPicMutation, useUploadProfilePicMutation } from "../../api/apiSlice";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
-import { getUser } from "../../axios/tokens";
 import Post from "../post/Post";
+import useAuthStore from "../../zustand/AuthStore";
 
 export default function Profile() {
 
   const user_id = useParams().user_id;
+  const localUser = useAuthStore().user;
   const fileRef = useRef<HTMLInputElement>(null);
   const coverFileRef = useRef<HTMLInputElement>(null);
   const profileRef = useRef<HTMLImageElement>(null);
   const bioRef = useRef<HTMLParagraphElement>(null);
   const [uplaodProfile, { isLoading: isProfileLoading, }] = useUploadProfilePicMutation();
   const [uplaodCover, { isLoading: isCoverLoading }] = useUploadCoverPicMutation();
-  const { isLoading,isFetching, data: user, isSuccess: isUserLoaded, isError: isProfileError } = useGetUserProfileQuery(user_id? user_id : getUser() as string);
+  const { isLoading,isFetching, data: user, isSuccess: isUserLoaded, isError: isProfileError } = useGetUserProfileQuery(user_id? Number(user_id) : null);
   const [uploadBio, { isLoading: isBioUpdating }] = useUpdateBioMutation();
   const [profilePic, setProfilePic] = useState("")
   const [coverPic, setCoverPic] = useState("")
@@ -22,7 +23,7 @@ export default function Profile() {
   const [bioEdit, setBioEdit] = useState("");
 
 
-  const {isLoading:isPostLoading,isError:isPostError,isSuccess:isPostSuccess,data:posts} = useGetPostQuery({user_id:user_id? user_id:getUser()});
+  const {isLoading:isPostLoading,isError:isPostError,isSuccess:isPostSuccess,data:posts} = useGetPostQuery({user_id:user_id? user_id:localUser?.id});
 
   // const profile = useMemo(() => user ? user.profile : null, [isLoading]);
   const [isBioEditing, setBioEditing] = useState(false);
@@ -145,7 +146,7 @@ export default function Profile() {
       <div className="spinner shadow-lg  mt-44 h-[100px] w-[100px]"></div>
     </div>
   )
-  if (isProfileError) return (<div className="mt-5">Something went wrong loading this profile</div>)
+  if (isProfileError || !user) return (<div className="mt-5">Something went wrong loading this profile</div>)
 
   return (
     <div className="mt-5 ">
@@ -168,7 +169,7 @@ export default function Profile() {
             :
             <img
               ref={profileRef}
-              onClick={() =>getUser()==user.id? coverFileRef.current?.click():null}
+              onClick={() =>localUser?.id==user.id? coverFileRef.current?.click():null}
               className="w-full h-[200px] object-cover rounded-lg shadow-lg"
               alt=""
               src={coverPic}
@@ -199,7 +200,7 @@ export default function Profile() {
               </div> :
               <img
                 ref={profileRef}
-                onClick={() => getUser()==user.id? fileRef.current?.click():null}
+                onClick={() => localUser?.id==user.id? fileRef.current?.click():null}
                 className="hover:scale-110 transition-transform h-[200px] bg-white w-[200px] object-cover rounded-full shadow-lg"
                 alt=""
                 src={profilePic}
@@ -218,7 +219,7 @@ export default function Profile() {
                   </p>
                  {
                  
-                 getUser()==user.id?
+                 localUser?.id==user.id?
                   <button onClick={() => setBioEditing(true)} className="bg-gray-300 dark:bg-gray-700 mt-4 px-4 py-1 rounded-lg">Edit Bio</button>
                   :null
                  } 
@@ -240,7 +241,7 @@ export default function Profile() {
 
           </div>
           {
-             !(getUser()==user.id)? <button className="my-5 bg-blue-600 py-2 px-4 rounded-lg hover:bg-blue-700 active:bg-blue-800 " onClick={()=>navigate('/messages/'+user.id)}>Message</button>:null
+             !(localUser?.id==user.id)? <button className="my-5 bg-blue-600 py-2 px-4 rounded-lg hover:bg-blue-700 active:bg-blue-800 " onClick={()=>navigate('/messages/'+user.id)}>Message</button>:null
 
           }
 

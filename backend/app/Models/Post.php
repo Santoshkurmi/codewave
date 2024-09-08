@@ -11,11 +11,20 @@ class Post extends Model
 
     protected $fillable = ['user_id','content','view_count'];
 
-    public  function Votes(){
-        return $this->hasMany(Vote::class);
+    public  function votes(){
+        
+        return $this->hasMany(Vote::class,'voteable_id')->where('voteable_type','post');
     }
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+    public function answers()
+    {
+        return $this->hasMany(Answer::class);
+    }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

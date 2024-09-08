@@ -9,22 +9,36 @@ import { dracula as dark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { faUps } from "@fortawesome/free-brands-svg-icons";
 import { api, useCastVoteMutation, useDeletePostMutation } from "../../api/apiSlice";
 import { useDispatch } from "react-redux";
-import { getUser } from "../../axios/tokens";
 import { formatDate } from "../../helpers/DateTimeConverter";
 import ConfigStore from "../../zustand/ConfigStore";
 import MarkdownShower from "../markdown/MarkdownShower";
 import ViewAnswers from "./ViewAnswers";
+import useAuthStore from "../../zustand/AuthStore";
 
 
-// const ReactMarkdown = lazy(()=>import('react-markdown'));
-// const SyntaxHighlighter = lazy(()=>import('react-syntax-highlighter'));
+/**
+ * The  Post component displays the content for a post.
+ *
+ * @param {{
+ *   user: object,
+ *   created_at: string,
+ *   content: string,
+ *   user_id: number,
+ *   id: number,
+ *   down_count: number,
+ *   up_count: number,
+ *   view_count: number,
+ * }} props
+ *
+ * @returns {JSX.Element}
+ */
 
-function Post({ user, created_at, content, user_id, id: post_id, down_count, up_count, view_count }: any) {
+function Post({ user, created_at,answer_count, content, user_id, id: post_id, down_count, up_count, view_count }:any): JSX.Element {
 
     //   return <div>{props.content}</div>
 
 
-    const logined_user_id = useMemo(() => getUser(), []);
+    const logined_user_id = useAuthStore().user?.id;
     const [castVote, { isLoading, isSuccess, isError }] = useCastVoteMutation();
     const [deletePost, { isLoading: isDeleting, isSuccess: isPostDeleted, isError: isDeleteError }] = useDeletePostMutation();
     const profile_pic = user.profile?.profile_pic ?? null;
@@ -113,7 +127,7 @@ function Post({ user, created_at, content, user_id, id: post_id, down_count, up_
                     <div onClick={() => castVote({ vote_type: '1', post_id })} className="upvote cursor-pointer"><FontAwesomeIcon icon={faArrowUp} /> {up_count}</div>
                     <div onClick={() => castVote({ vote_type: '-1', post_id })} className="downvote cursor-pointer"><FontAwesomeIcon icon={faArrowDown} /> {down_count}</div>
                 </div>
-                <div className="answers cursor-pointer" onClick={()=>navigate("/post/"+post_id)}>Answers</div>
+                <div className="answers cursor-pointer" onClick={()=>navigate("/post/"+post_id)}>Answers {answer_count}</div>
 
                 <div className="views"><FontAwesomeIcon icon={faEye} /> {view_count}</div>
             </div>

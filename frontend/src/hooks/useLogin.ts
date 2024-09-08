@@ -3,15 +3,33 @@ import api from "../axios/api";
 import {  useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import userStore from "../zustand/UserStore";
+import useAuthStore from "../zustand/AuthStore";
 
+/**
+ * @function useLogin
+ *
+ * Custom hook to handle user login form.
+ *
+ * @returns {{
+ *  data: {username:string,password:string,loading:boolean},
+ *  err: {username:string,password:string},
+ *  updateData: (value:Partial<{
+ *    username:string,
+ *    password:string,
+ *    loading:boolean
+ *  }>) => void,
+ *  execute: () => Promise<void>
+ * }}
+ */
 function useLogin() {
 
+  const {setToken} =  useAuthStore();
   const [data,setData] = useState({
     username:"santosh@gmail.com",
     password:"Duffer123",
     loading:false,
   });
-
+  // alert(token);
   const dataRef = useRef(data)
   useEffect(()=>{
     dataRef.current = data;
@@ -22,7 +40,6 @@ function useLogin() {
     password:"",
   });
 
-  const navigate = useNavigate()
   const {setUser} = userStore()
 
   const updateErr =useCallback( function  updateErr (value:Partial<typeof data>){
@@ -58,16 +75,16 @@ function useLogin() {
 
     var {username,password} = dataRef.current;
     var {res,errors} =await api.send("/login",{username,password})
-
+    // console.log(res)
     updateData({loading:false})
 
+    
+
     if(errors==null){
-        toast.success(res.msg,{position:"top-center",autoClose:1000})
-        // setToken(res.token)
-        // console.log(res.token,res.data.id)
-        setUser({token:res.token,user_id:res.data.id})
-        // setTimeout(()=>navigate("/"),2000)
-        // navigate("/")
+        toast.success(res.msg,{position:"top-center",autoClose:1000})   
+        // setUser({token:res.token,user_id:res.data.id})
+        setToken(res.access_token);
+              
         return;
     }//if success
     updateErr(errors)

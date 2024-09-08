@@ -1,9 +1,8 @@
 import Echo from "laravel-echo";
-import { getToken } from "../axios/tokens";
 import Pusher from "pusher-js";
-import { toast } from "react-toastify";
+
 import { memo, useEffect } from "react";
-import userStore from "../zustand/UserStore";
+import useAuthStore from "../zustand/AuthStore";
 
 // pusherJs
 // Pusher
@@ -20,7 +19,7 @@ import userStore from "../zustand/UserStore";
 //     enabledTransports: ['ws', 'wss'],
 // });
 function EchoConfig() {
-  const token = userStore().user.token;
+  const token = useAuthStore.getState().token;
   useEffect(() => {
     if ((window as any).echo) {
       console.log("Echo is going to be disconnected");

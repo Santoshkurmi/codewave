@@ -18,7 +18,6 @@ import {
   useSendMessageMutation,
 } from "../../api/apiSlice";
 // import { echo } from "../../echo/echoConfig";
-import { getUser } from "../../axios/tokens";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import Echo, { Channel } from "laravel-echo";
@@ -26,9 +25,11 @@ import { faMessage } from "@fortawesome/free-regular-svg-icons";
 import CodeMessageEditor from "./CodeMessageEditor";
 import CodeMessageEditing from "./CodeMessageEditing";
 import ConfigStore from "../../zustand/ConfigStore";
+import useAuthStore from "../../zustand/AuthStore";
 
 function ListMessages(props: any) {
   const { user_id } = useParams();
+  const {user} = useAuthStore();
   const location = useLocation().state;
   const lastMessageRef = useRef<any>();
 
@@ -132,11 +133,11 @@ function ListMessages(props: any) {
       toast.error("No echo found");
       return;
     }
-    var channel = echo.private("message.sent." + getUser());
-    channel.whisper("typing", { user_id: 2 });
-    channel.listenForWhisper("typing", (e: any) => {
-      alert(e.user_id + " is typing");
-    });
+    var channel = echo.private("message.sent." + user?.id);
+    // channel.whisper("typing", { user_id: 2 });
+    // channel.listenForWhisper("typing", (e: any) => {
+    //   alert(e.user_id + " is typing");
+    // });
 
     channel.listen("MessageSentEvent", (event: any) => {
       // alert(event.message)
@@ -175,17 +176,17 @@ function ListMessages(props: any) {
     // alert(markdown)
       e.preventDefault();
 
-      sendMessage({ user_id: Number(user_id), text: msg });
+      sendMessage({ user_id: Number(user_id),is_markdown:false, text: msg });
       setMsg("");
     },
     [msg],
   );
 
   useEffect(()=>{
-    // alert("es");
+    
 
     if(!markdown)return;
-    sendMessage({ user_id: Number(user_id), text: '',markdown:markdown });
+    sendMessage({ user_id: Number(user_id),is_markdown:true,text:markdown });
 
   },[markdown]);
 

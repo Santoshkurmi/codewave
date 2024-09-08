@@ -7,11 +7,13 @@ import { Outlet } from "react-router-dom"
 import EchoConfig from "../../echo/echoConfig"
 import ConfigStore from "../../zustand/ConfigStore"
 import UseScrollListener from "./UseScrollListener"
+import useAuthStore from "../../zustand/AuthStore"
 
 function Home() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [headerHidden, setHeaderHidden] = useState(false);
   const { isRightNavHidden, isHeaderNavHidden, isLeftNavHidden, } = ConfigStore();
+
 
   UseScrollListener({ scrollContainerRef, setHeaderHidden });
 

@@ -1,38 +1,57 @@
-import axios from "axios";
-import { getToken } from "./tokens";
-import { Zoom, toast } from "react-toastify";
-import userStore from "../zustand/UserStore";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { toast } from "react-toastify";
+import useAuthStore from "../zustand/AuthStore";
 
+
+axios.defaults.withCredentials = true;
+axios.defaults.withXSRFToken = true;
 
 const axiosFunc =()=> axios.create(
     {
         baseURL:"http://localhost:8000/api/v1",
         headers:{
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer '+getToken()
+            // 'Authorization': 'Bearer '+getToken()
         },
+        withCredentials:true,
+        withXSRFToken:true,
+        
+        
     }
 );
 
 async function send(path:string,body:any={},method:string|null='POST'){
     // kkk
     // axiosObj().defaults.headers.get['Authorization'] ="mama "+ getToken()?.toString();
-    const axiosObj = axiosFunc()
+    const axiosObj = axiosFunc();
     var data:Record<string,any> = {};
     var errors:Record<string,string>|null = null;
+    var res = null;
+    var msg =null;
     try{
        if(method=="POST")
-            var res = await axiosObj.post(path,body)
+             res = await axiosObj.post(path,body)
        else
-            var res = await axiosObj.get(path)
+             res = await axiosObj.get(path)
        data = res.data
-       if(!res.data.success) errors = res.data.errors
+    //    if(!res.data.success) errors = res.data.errors
     }
-    catch(e){
+    catch(e:any){
        errors = {default:(e as string).toString()}; 
+       console.log(e.response.data.message);
+       msg = e.response.data?.message;
+     
     }
-    if(errors?.default !=null)
-        toast.error(errors.default);
+    // alert(msg);
+
+    if(msg){
+        toast.error(msg+"");
+    }
+    else if (errors?.default){
+        toast.error(errors.default+"");
+    }
+
+
     return {res:data,errors}
     
 }

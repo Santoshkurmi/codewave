@@ -16,8 +16,8 @@ class ApiAuthenciate
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::guard('sanctum')->guest()){
-            return response()->json(['msg'=>'Please login to access this resource','error'=>'Unauthorized user'],401);
+        if(Auth::guard('api')->guest()){
+            return response()->json(['message'=>'Please login to access this resource','error'=>'Unauthorized user'],405);
         }//user is not logined
         return $next($request);
     }

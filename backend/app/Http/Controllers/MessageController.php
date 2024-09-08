@@ -18,7 +18,7 @@ class MessageController extends Controller
 
     public function send(MessageRequest $request){
         $text = $request->text;
-        $markdown = $request->markdown;
+        $is_markdown = $request->is_markdown;
         $sender = auth()->user()->id;
         $receiver = $request->user_id;
         // $conversation_id = $request->conversation_id;
@@ -34,7 +34,7 @@ class MessageController extends Controller
             ConversationUser::createNewConversationUsers($conversation->id,$sender,$receiver);
         }//if conversation is not found ,then create new one
 
-        $message = Message::create(['markdown'=>$markdown,'text'=>$text,'user_id'=>$sender,'conversation_id'=>$conversation->id]);
+        $message = Message::create(['is_markdown'=>$is_markdown,'text'=>$text,'user_id'=>$sender,'conversation_id'=>$conversation->id]);
         // broadcast(new MessageSentEvent($message,$receiver));
         MessageSentEvent::dispatch($message,$receiver);
         // MessageJob::dispatch($message,$receiver);
@@ -42,11 +42,6 @@ class MessageController extends Controller
         return response()->json(['success'=>true,'data'=>$message,'msg'=>'Message is sent successfully']);
 
     }//send
-
-    // public function getPreviousMessages(Request $request){
-    //     $lastMessageId = $request->lastMessageId;
-        
-    // }
 
     public function get(MessageGetRequest $request){
 

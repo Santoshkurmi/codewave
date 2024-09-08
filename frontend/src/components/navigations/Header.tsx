@@ -4,13 +4,25 @@ import { faBell, faMoon } from "@fortawesome/free-regular-svg-icons"
 import { faPerson, faPlus, faSearch, faTextHeight } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from "react-router-dom"
 import { useGetUserProfileQuery } from "../../api/apiSlice"
-import { getUser } from "../../axios/tokens"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import ConfigStore from "../../zustand/ConfigStore"
+import useAuthStore from "../../zustand/AuthStore"
 
+/**
+ * This component renders the top navigation bar of the app.
+ * It contains the app logo, a search input, and a button to add a new post.
+ * It also renders the user's profile picture and a button to toggle the theme.
+ * The component uses the useGetUserProfileQuery hook to fetch the user's profile data.
+ * It uses the useNavigate hook to navigate to the profile page when the user clicks on their profile picture.
+ * It uses the useState hook to store the user's profile picture and the theme.
+ * It uses the useEffect hook to update the user's profile picture when the user logs in or logs out.
+ * It uses the useCallback hook to memoize the setTheme function.
+ * @returns {JSX.Element} The JSX element representing the top navigation bar.
+ */
 function Header() {
   const navigate = useNavigate();
-  const { isLoading,isFetching, data: user, isSuccess: isUserLoaded, isError: isProfileError } = useGetUserProfileQuery(getUser() as string);
+  // const localUser = useAuthStore().user;
+  const { isLoading,isFetching, data: user, isSuccess: isUserLoaded, isError: isProfileError } = useGetUserProfileQuery( null);
   const profilePlaceholder = "https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png";
   const [profilePic,setProfilePic] = useState(profilePlaceholder);
   const setDarkTheme = ConfigStore().setDarkTheme;
@@ -31,9 +43,13 @@ function Header() {
 
 
 
-  const setTheme = ()=>{
+  /**
+   * A memoized function to toggle the theme.
+   * @returns {void}
+   */
+  const setTheme = useCallback(() => {
     setDarkTheme();
-  }
+  }, []);
   
   return (
     <div 

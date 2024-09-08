@@ -11,9 +11,9 @@ import { useLocation, useParams } from 'react-router-dom';
 import ConfigStore from '../../zustand/ConfigStore';
 import { editor as editorType } from 'monaco-editor';
 import axios from 'axios';
-import { getToken } from '../../axios/tokens';
 import MarkdownShower from '../markdown/MarkdownShower';
 import MarkdownEditor from '../markdown/MarkdownEditor';
+import useAuthStore from '../../zustand/AuthStore';
 
 // const ReactMarkdown = lazy(()=>import('react-markdown'));
 // const SyntaxHighlighter = lazy(()=>import('react-syntax-highlighter'));
@@ -23,6 +23,7 @@ function UpdatePost() {
     // const location = useLocation();
     const isDark = ConfigStore().isDark;
     const  post_id = useParams().post_id || null;
+    const token = useAuthStore().token;
 
     const {setRightNav,setLeftNav,setHeaderNav} = ConfigStore();
     const [text, setText] = useState("");
@@ -136,7 +137,7 @@ function UpdatePost() {
             const response = await axios.post('http://localhost:8000/api/v1/store_image', form, {
                 headers: {
                   'Content-Type': 'multipart/form-data',
-                  'Authorization':'Bearer '+getToken(),
+                  'Authorization':'Bearer '+token,
                 },
               });
 

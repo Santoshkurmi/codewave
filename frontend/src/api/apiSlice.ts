@@ -1,18 +1,26 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getToken, getUser } from "../axios/tokens";
 import userStore from "../zustand/UserStore";
+import useAuthStore from "../zustand/AuthStore";
+import axios from "axios";
+import BaseQueryWithRefresh from "./BaseQueryWithRefresh";
+import { toast } from "react-toastify";
 
 
-interface User {
+interface Profile{
+    id:number,
+    user_id:number,
+    bio?:string,
+    cover_pic?:string,
+    profile_pic?:string,
+}
+
+
+export interface User {
     id: number,
     name: string,
     email: string,
     username: string,
-}
-
-interface Conversation {
-    conversation_id: number,
-    user: User
+    profile?:Profile
 }
 
 interface Message {
@@ -21,8 +29,59 @@ interface Message {
     user_id: number,
     conversation_id: number,
     updated_at: string,
-    created_at: string
+    created_at: string,
+    is_markdown:boolean
 }
+
+export interface Post {
+    id: number,
+    content: string,
+    user_id: number,
+    view_count: number,
+    updated_at: string,
+    created_at: string,
+    down_count:number,
+    up_count:number,
+    answer_count:number,
+    user:User,
+    comment:Comment[],
+    answers:Answer[]
+}
+export interface Comment{
+    id:number,
+    content:string,
+    user_id:number,
+    answer_id:number,
+    created_at:string,
+    updated_at:string,
+    user:User
+}
+
+export interface Answer{
+    id:number,
+    markdown:string,
+    user_id:number,
+    post_id:number,
+    down_count:number,
+    up_count:number,
+    user:User,
+    created_at:string,
+    updated_at:string,
+    comments:Comment[]
+}
+
+interface Conversation{
+    user_id:number,
+    conversation_id:number,
+    user:User
+}
+
+
+//payload
+
+
+
+
 interface MessagePayLoad {
     user: User,
     isNoMoreMsg?:boolean,
@@ -31,9 +90,10 @@ interface MessagePayLoad {
 interface MessageSend {
     user_id: number,
     text: string,
-    last_msg_id?:number
+    is_markdown:boolean,
+    // last_msg_id?:number
 }
-interface MessageGet{
+interface MessageGetPreviousPayload{
     user_id:number,
     is_after?:boolean,
     last_message_id:number
@@ -48,34 +108,51 @@ function generateNew() {
 export const api = createApi(
     {
         reducerPath: 'conversationApi',
-        baseQuery: fetchBaseQuery({ 
-        prepareHeaders(headers, api) {
-            headers.set('Authorization','Bearer ' + getToken());
-            
-        },baseUrl: "http://localhost:8000/api/v1/" }),
+        
+        baseQuery:BaseQueryWithRefresh,
+    
         tagTypes: ['Conversation', 'Message', 'User','Profile','Post'],
+
         endpoints: (builder) => ({
+
+            logout: builder.mutation<void, void>({
+                query: () => ({ url: '/logout', method: 'POST', body: {} }),
+                invalidatesTags: ['Conversation','Message','User','Post','Profile'],
+                transformResponse: (response: any) => {
+                    console.log(response)
+                    const message = response.message;
+                    toast.success(message);
+                    useAuthStore.getState().setToken(null)
+                    useAuthStore.getState().setUser(null)
+                    return response;
+                },
+                transformErrorResponse:(error)=>{
+                    const message = (error.data as any)?.message
+                    toast.error(message);
+                }
+            }),//logoout
             getConversations: builder.query<Conversation[], void>({
                 query: () => ({ url: '/conversations', method: 'POST', body: {} }),
                 providesTags: ['Conversation'],
                 transformResponse: (response: any) => {
-                    console.log(response)
+                    console.log('conversation',response)
                     return response.data;
                 }
             }),//getConversation
 
-            getMessages: builder.query<MessagePayLoad, number>({
+            getMessages: builder.query<{messages:Message[],user:User,isNoMoreMsg:boolean}, number>({
 
                 query: (user_id) => ({ url: '/messages', body: { user_id }, method: 'POST' }),
                 providesTags: ['Message'],
                 transformResponse: (response: any) => {
+                    console.log('messages',response)
                     response.data.messages.reverse();
                     if(response.data.messages.length==0) response.data.isNoMoreMsg = true;
                     return response.data;
                 }
             }),//getMEssages
 
-            getPreviousMessages: builder.mutation<MessagePayLoad, MessageGet>({
+            getPreviousMessages: builder.mutation<{messages:Message[],user:User,isNoMoreMsg:boolean}, MessageGetPreviousPayload>({
 
                 query: (msgQuery) => ({ url: '/messages', body: msgQuery, method: 'POST' }),
                 // providesTags: ['Message'],
@@ -100,7 +177,7 @@ export const api = createApi(
                 
             }),//getMEssages
 
-            createPost:builder.mutation<any,any>({
+            createPost:builder.mutation<any,{content:string}>({
                 query:(postPayload)=>({url:'/create_post',body:postPayload,method:'POST'}),
                 invalidatesTags:['Post'],
             
@@ -109,7 +186,7 @@ export const api = createApi(
                     return response.data;
                 }
             }),
-            updatePost:builder.mutation<any,any>({
+            updatePost:builder.mutation<any,{post_id:number,content:string}>({
                 query:(postPayload)=>({url:'/update_post',body:postPayload,method:'POST'}),
                 invalidatesTags:['Post'],
             
@@ -119,7 +196,7 @@ export const api = createApi(
                 }
             }),
           
-            increaseView:builder.mutation<any,any>({
+            increaseView:builder.mutation<any,{post_id:number}>({
                 query:(viewPayload)=>({url:'/increase_post_view',body:viewPayload,method:'POST'}),
                 invalidatesTags:['Post'],
                 transformResponse: (response: any) => {
@@ -127,7 +204,7 @@ export const api = createApi(
                     return response.data;
                 }
             }),
-            deletePost:builder.mutation<any,any>({
+            deletePost:builder.mutation<any,{post_id:number}>({
                 query:(deletePayload)=>({url:'/delete_post',body:deletePayload,method:'POST'}),
                 invalidatesTags:['Post'],
                 transformResponse: (response: any) => {
@@ -135,15 +212,31 @@ export const api = createApi(
                     return response.data;
                 }
             }),
-            castVote:builder.mutation<any,any>({
-                query:(votePayload)=>({url:'/vote_post',body:votePayload,method:'POST'}),
+            castVote:builder.mutation<any,{post_id?:number,answer_id?:number,vote_type:'1'|'-1'}>({
+                query:(votePayload)=>({url:'/vote',body:votePayload,method:'POST'}),
                 invalidatesTags:['Post'],
                 transformResponse: (response: any) => {
                     console.log(response);
                     return response.data;
                 }
             }),
-            getPost:builder.query<any,any>({
+            postAnswer:builder.mutation<Answer,{post_id:number,markdown:string}>({
+                query:(votePayload)=>({url:'/post_answer',body:votePayload,method:'POST'}),
+                invalidatesTags:['Post'],
+                transformResponse: (response: any) => {
+                    console.log(response);
+                    return response.data;
+                }
+            }),
+            postComment:builder.mutation<Comment,{answer_id:number,content:string}>({
+                query:(votePayload)=>({url:'/post_comment',body:votePayload,method:'POST'}),
+                invalidatesTags:['Post'],
+                transformResponse: (response: any) => {
+                    console.log(response);
+                    return response.data;
+                }
+            }),
+            getPost:builder.query<Post,{post_id?:number,user_id?:number,all:true}>({
                 query:(getPostPayload)=>({url:'/posts',body:getPostPayload,method:'POST'}),
                 providesTags:['Post'],
                 transformResponse: (response: any) => {
@@ -167,8 +260,9 @@ export const api = createApi(
                             
                             draft.messages.push({
                                 id: id,
+                                is_markdown:msg.is_markdown,
                                 text: msg.text,
-                                user_id: Number(getUser()),
+                                user_id: useAuthStore.getState().user?.id ?? -100,
                                 conversation_id: -1,
                                 updated_at: '',
                                 created_at: ''
@@ -233,10 +327,16 @@ export const api = createApi(
 
             }),//getUsers
 
-            getUserProfile: builder.query<any, number|string>({
-                query: (user_id:number) => ({ url: '/get_user_profile', body: {user_id:user_id}, method: "POST" }),
+            getUserProfile: builder.query<User,number|null | undefined  >({
+                query: (user_id) => ({ url: '/get_user_profile', body: {user_id}, method: "POST" }),
                 providesTags: ['Profile'],
-                transformResponse: (response: any) => { return response.data; }
+                transformResponse: (response:{data:User},meta,user_id) => { 
+                    if(user_id==null){
+                        // alert("doign it now");
+                        useAuthStore.getState().setUser(response.data);
+                    }
+                    return response.data; 
+                }
 
             }),//getUsers
 
@@ -257,19 +357,12 @@ export const api = createApi(
                 transformResponse:(response:any)=>{return response.data;},
                 invalidatesTags:['Profile']
 
-            }),
+            })
 
-            logout: builder.mutation<void, void>({
-                query: () => ({ url: '/logout', body: {}, method: "POST" }),
-                invalidatesTags: ['Conversation', 'User', 'Message'],
-                transformResponse: (response: any) => {
-                    userStore().setUser({});
-                    return response;
-                }
-            }),
+          
 
         })//endpoint
     }
 );//createAPi
 
-export const { useUpdatePostMutation,useDeletePostMutation,useCreatePostMutation,useIncreaseViewMutation,useGetPostQuery,useCastVoteMutation,useUpdateBioMutation,useUploadCoverPicMutation,useGetUserProfileQuery,useUploadProfilePicMutation,useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;
+export const { usePostAnswerMutation,usePostCommentMutation,useUpdatePostMutation,useDeletePostMutation,useCreatePostMutation,useIncreaseViewMutation,useGetPostQuery,useCastVoteMutation,useUpdateBioMutation,useUploadCoverPicMutation,useGetUserProfileQuery,useUploadProfilePicMutation,useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;

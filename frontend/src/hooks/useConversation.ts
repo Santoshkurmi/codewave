@@ -3,6 +3,19 @@ import { useState } from "react";
 import api from "../axios/api";
 import { toast } from "react-toastify";
 
+/**
+ * @function useConversation
+ * 
+ * @returns an object with properties
+ * - loading: boolean
+ * - conversations: an array of conversation objects
+ * - getConversations: a function to get conversations
+ * 
+ * @description it is a hook to get conversations from the server
+ * and save them in the local state. It also provides a function
+ * to get the conversations from the server.
+ */
+
 function useConversation(){
    
     const [conversations,setConversations] = useState<[]>([]);
