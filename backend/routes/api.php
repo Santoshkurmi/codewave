@@ -9,6 +9,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostViewController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\VoteController;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -29,10 +30,13 @@ Route::prefix('v1')->group(function(){
     Route::post('/login',[AuthController::class,'login']);
     Route::post('/refresh_token',[AuthController::class,'refreshAccessToken']);
 
+    Route::get('/search',[SearchController::class,'search']);
 });
 
 //api_auth
 Route::prefix('v1')->middleware('api_auth')->group(function(){
+
+    // Route::post(uri: '/get',[AuthController::class,'search']);
 
     Route::post('/logout',[AuthController::class,'logout']);
 
@@ -42,6 +46,7 @@ Route::prefix('v1')->middleware('api_auth')->group(function(){
  
     Route::post('message/send',[MessageController::class,'send']);
     Route::post('messages',[MessageController::class,'get']);
+    Route::post('message/view',[MessageController::class,'updateMessageSeen']);
 
     Route::post('conversations',[ConversationController::class,'getConversations']);
 

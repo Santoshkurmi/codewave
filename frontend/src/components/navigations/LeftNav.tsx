@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRef, useState } from "react";
 import api from "../../axios/api";
 import { BrowserRouter, NavLink, Outlet, RouterProvider, createBrowserRouter, useLocation, useNavigate } from "react-router-dom";
-import Messages from "../message/Messages";
+import Messages from "../message/Conversations";
 import userStore from "../../zustand/UserStore";
 import useLogin from "../../hooks/useLogin";
 import useLogout from "../../hooks/useLogout";

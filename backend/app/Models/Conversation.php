@@ -15,6 +15,11 @@ class Conversation extends Model
         return $this->hasMany(Message::class);
     }//
 
+    public function lastMessage()
+    {
+        return $this->hasOne(Message::class)->latest('created_at');
+    }
+
     public static function findConversation($user1_id,$user2_id){
 
         $conversation = Conversation::join('conversation_users as cu1','conversations.id','=','cu1.conversation_id')
@@ -29,6 +34,6 @@ class Conversation extends Model
 
 
     public function users(){
-       return $this->belongsToMany(User::class,'conversation_users'); 
+       return $this->belongsToMany(User::class,'conversation_users')->withPivotValue('last_message_seen'); 
     }
 }

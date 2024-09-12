@@ -70,10 +70,17 @@ export interface Answer{
     comments:Comment[]
 }
 
-interface Conversation{
+export interface Conversation{
     user_id:number,
     conversation_id:number,
-    user:User
+    user:User,
+    conversation:{
+        is_group:boolean,
+        profile?:string,
+        title?:string,
+        last_message?:Message
+    }
+    
 }
 
 
@@ -151,6 +158,17 @@ export const api = createApi(
                     return response.data;
                 }
             }),//getMEssages
+            updateMessageView: builder.mutation<any, number>({
+
+                query: (user_id) => ({ url: '/message/view', body: { user_id }, method: 'POST' }),
+                // providesTags: ['Message'],
+                // transformResponse: (response: any) => {
+                //     console.log('messages',response)
+                //     response.data.messages.reverse();
+                //     if(response.data.messages.length==0) response.data.isNoMoreMsg = true;
+                //     return response.data;
+                // }
+            }),//getMEssages
 
             getPreviousMessages: builder.mutation<{messages:Message[],user:User,isNoMoreMsg:boolean}, MessageGetPreviousPayload>({
 
@@ -176,6 +194,14 @@ export const api = createApi(
 
                 
             }),//getMEssages
+            search:builder.query<any,string>({
+                query:(query)=>({url:'/search?query='+query}),
+                // invalidatesTags:['Post'],
+                transformResponse: (response: any) => {
+                    console.log(response)
+                    return response.data;
+                }
+            }),
 
             createPost:builder.mutation<any,{content:string}>({
                 query:(postPayload)=>({url:'/create_post',body:postPayload,method:'POST'}),
@@ -365,4 +391,4 @@ export const api = createApi(
     }
 );//createAPi
 
-export const { usePostAnswerMutation,usePostCommentMutation,useUpdatePostMutation,useDeletePostMutation,useCreatePostMutation,useIncreaseViewMutation,useGetPostQuery,useCastVoteMutation,useUpdateBioMutation,useUploadCoverPicMutation,useGetUserProfileQuery,useUploadProfilePicMutation,useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;
+export const { useLazySearchQuery,useUpdateMessageViewMutation,usePostAnswerMutation,usePostCommentMutation,useUpdatePostMutation,useDeletePostMutation,useCreatePostMutation,useIncreaseViewMutation,useGetPostQuery,useCastVoteMutation,useUpdateBioMutation,useUploadCoverPicMutation,useGetUserProfileQuery,useUploadProfilePicMutation,useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;

@@ -4,7 +4,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Broadcast;
 
 // Broadcast::routes();
-Broadcast::routes(['middleware' => ['auth:sanctum']]);
+Broadcast::routes(['middleware' => ['api_auth','auth:api']]);
 
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return true;

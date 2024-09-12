@@ -14,7 +14,7 @@ function Feeds() {
   return (
     <div className="">
       {
-      posts &&  posts.map((post:any)=>{
+       posts &&  posts.map((post:any)=>{
           // console.log(key)
           return <Post {...post} key={post.id}/>
         })

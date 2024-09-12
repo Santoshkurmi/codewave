@@ -52,14 +52,14 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($loginRequest->password, $user->password)) {
             // session()->regenerate();
-            return response()->json(["errors" => ['default' => "The provided credential is invalid"], "success" => false]);
+            return response()->json(["errors" => ['default' => "The provided credential is invalid"], "success" => false],200);
         }//if false
         else {
             $token = auth()->login($user);
             if ($token) {
                 return $this->respondWithTokens($token,$user->id);
             }
-            return response()->json(["errors" => ['default' => "Something went wrong"], "success" => false]);
+            return response()->json(["errors" => ['default' => "Something went wrong"], "success" => false],200);
         }
 
     }//login

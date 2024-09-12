@@ -16,6 +16,20 @@ use Illuminate\Http\Request;
 class MessageController extends Controller
 {
 
+
+    public function updateMessageSeen(Request $request){
+        $receiver = $request->user_id;
+        $owner = auth()->user()->id;
+
+        
+
+        $conversation = Conversation::findConversation($owner,$receiver);
+        if($conversation){
+            auth()->user()->conversations()->updateExistingPivot($conversation->id,[
+                'last_message_seen'=> now()
+            ]);
+        }//
+    }
     public function send(MessageRequest $request){
         $text = $request->text;
         $is_markdown = $request->is_markdown;

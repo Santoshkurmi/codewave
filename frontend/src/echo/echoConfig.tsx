@@ -3,6 +3,7 @@ import Pusher from "pusher-js";
 
 import { memo, useEffect } from "react";
 import useAuthStore from "../zustand/AuthStore";
+import axios from "axios";
 
 // pusherJs
 // Pusher
@@ -38,9 +39,30 @@ function EchoConfig() {
       // transports: ["websocket", "polling", "flashsocket"],
       auth: {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       },
+
+      
+
+      authorizer: (channel, options) => {
+        return {
+            authorize: (socketId, callback) => {
+                axios.post('http://localhost:8000/broadcasting/auth', {
+
+                    socket_id: socketId,
+                    channel_name: channel.name,
+                  }, { withCredentials: true,headers:{ Authorization: `${token}`,}  })
+                .then(response => {
+                    callback(false, response.data);
+                })
+                .catch(error => {
+                    callback(true, error);
+                });
+            }
+        };
+    }
+
     }); //ech
 
     // initialEcho(getToken())

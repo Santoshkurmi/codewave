@@ -34,7 +34,7 @@ async function send(path:string,body:any={},method:string|null='POST'){
        else
              res = await axiosObj.get(path)
        data = res.data
-    //    if(!res.data.success) errors = res.data.errors
+       if(!res.data.success) errors = res.data.errors
     }
     catch(e:any){
        errors = {default:(e as string).toString()}; 

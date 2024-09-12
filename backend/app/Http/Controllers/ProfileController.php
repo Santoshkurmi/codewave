@@ -53,7 +53,7 @@ class ProfileController extends Controller
             // sleep(5);
 
             $request->validate([
-                'profile_pic' => 'required|image|mimes:jpeg,png,jpg',
+                'profile_pic' => 'required|image|mimes:jpeg,png,jpg,webp',
             ]);
             // print_r($request->__tostring());
 
@@ -90,9 +90,9 @@ class ProfileController extends Controller
 
         // sleep(5);
 
-        // $request->validate([
-        //     'cover_pic' => 'required|image|mimes:jpeg,png,jpg',
-        // ]);
+        $request->validate([
+            'cover_pic' => 'required|image|mimes:jpeg,png,jpg,webp',
+        ]);
         // print_r($request->__tostring());
 
         // return response()->json($request->files->get('profile_pic'));

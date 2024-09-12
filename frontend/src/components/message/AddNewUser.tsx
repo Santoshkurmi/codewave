@@ -7,12 +7,12 @@ import createFuzzySearch from "@nozbe/microfuzz";
 import NewUserProfile from "./NewUserProfile";
 import { useGetUsersQuery, useLogoutMutation } from "../../api/apiSlice";
 
-function AddNewUser() {
+function AddNewUser({setSelectedChat}) {
   // const { loading, users, getUsers } = useUser()
   const { isSuccess, isLoading, data: users } = useGetUsersQuery();
   const [filteredUsers, setFilteredUsers] = useState<any>([]);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
 
   const fuzzySearch = useMemo(() => {
@@ -70,7 +70,7 @@ function AddNewUser() {
             <div className="spinner h-32 w-32 shadow-lg rounded-full"></div>
           </div> : filteredUsers.map((user: any) => {
             // {console.log(user)}
-            return <NewUserProfile key={user.item.id} {...user.item} />;
+            return <NewUserProfile setSelectedChat={setSelectedChat} key={user.item.id} {...user.item} />;
           })
 
         }

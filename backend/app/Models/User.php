@@ -40,7 +40,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function conversations(){
-        return $this->belongsToMany(Conversation::class,'conversation_users');
+        return $this->belongsToMany(Conversation::class,'conversation_users')->withPivot('last_message_seen');
     }
 
     /**

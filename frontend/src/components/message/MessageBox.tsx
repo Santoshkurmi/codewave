@@ -34,7 +34,7 @@ function MessageBox({ id, is_markdown, pic, conversation_id, user_id, current_us
                             <div className="div p-2 bg-gray-200 dark:bg-gray-700 w-[80%] rounded-lg">
 
 
-                                <MarkdownShower text={text} isPreview={false} />
+                                <MarkdownShower text={text} isPreview={true} />
 
                             </div>
                         </>
@@ -63,7 +63,7 @@ function MessageBox({ id, is_markdown, pic, conversation_id, user_id, current_us
 
                         <div className="div p-2 bg-gray-200 dark:bg-gray-700 w-[80%] rounded-lg">
 
-                            <MarkdownShower text={text} />
+                            <MarkdownShower text={text} isPreview={true} />
 
                         </div>
 

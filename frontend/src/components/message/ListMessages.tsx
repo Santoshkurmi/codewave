@@ -16,6 +16,7 @@ import {
   useGetMessagesQuery,
   useGetPreviousMessagesMutation,
   useSendMessageMutation,
+  useUpdateMessageViewMutation,
 } from "../../api/apiSlice";
 // import { echo } from "../../echo/echoConfig";
 import { useDispatch } from "react-redux";
@@ -27,8 +28,9 @@ import CodeMessageEditing from "./CodeMessageEditing";
 import ConfigStore from "../../zustand/ConfigStore";
 import useAuthStore from "../../zustand/AuthStore";
 
-function ListMessages(props: any) {
-  const { user_id } = useParams();
+function ListMessages() {
+  // const { user_id } = useParams();
+  const { id:user_id } = useParams();
   const {user} = useAuthStore();
   const location = useLocation().state;
   const lastMessageRef = useRef<any>();
@@ -61,6 +63,14 @@ function ListMessages(props: any) {
   // var [disableScrollListener,setDisableScroll] = useState(false)
 
   var echoChannelRef = useRef<Channel>(null);
+
+  const [updateMessageView] = useUpdateMessageViewMutation();
+
+
+  useEffect(()=>{
+    updateMessageView(Number(user_id));
+  },[])
+
 
   useEffect(() => {
     if (messages.isNoMoreMsg) {
@@ -124,40 +134,6 @@ function ListMessages(props: any) {
   // },[msg])
 
 
-  useEffect(() => {
-    // alert("y")
-    // return;
-    setRightNav(true);
-    const echo: Echo = (window as any).echo;
-    if (!echo) {
-      toast.error("No echo found");
-      return;
-    }
-    var channel = echo.private("message.sent." + user?.id);
-    // channel.whisper("typing", { user_id: 2 });
-    // channel.listenForWhisper("typing", (e: any) => {
-    //   alert(e.user_id + " is typing");
-    // });
-
-    channel.listen("MessageSentEvent", (event: any) => {
-      // alert(event.message)
-      // console.log("Message Received", event.message.text);
-      dispatch<any>(
-        api.util.updateQueryData("getMessages", Number(user_id), (draft) => {
-          // var scrollHeight = container.current?.scrollHeight
-          // previousScrollHeight.current = 500 || -1;
-          
-          draft.messages.push(event.message);
-        }),
-      ); //dispatch
-    }); //echo privat chat
-
-    return () => {
-      channel.stopListening("MessageSentEvent");
-    setRightNav(false);
-
-    };
-  }, []);
 
   const submitFormTextArea = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -210,7 +186,7 @@ function ListMessages(props: any) {
   }, [messages]);
 
   return (
-    <div className=" bg-white flex h-full flex-col dark:bg-black lg:border dark:border-gray-600  w-full  rounded-lg shadow-md px-8 pt-2 lg:pt-5 ">
+    <div className="  flex h-full flex-col  rounded-lg shadow-md p-4 pb-0">
      
      {
         isCodeEditing &&
@@ -220,15 +196,15 @@ function ListMessages(props: any) {
      }
      
       <div className="header flex justify-between  items-center align-middle">
-        <div className=" justify-center mb-6 gap-5 flex items-center ">
-          <FontAwesomeIcon
+        <div className=" justify-center  gap-5 flex items-center ">
+          {/* <FontAwesomeIcon
             onClick={() =>  history.back() }
             className="hover:bg-gray-300 dark:hover:bg-gray-600 active:bg-gray-200 rounded-lg p-3"
             icon={faLeftLong}
-          />
+          /> */}
           {
 
-            messages.user.profile?.profile_pic ? <img onClick={()=>navigate('/profile/'+messages.user?.id)} className="h-[60px] cursor-pointer w-[60px] rounded-full" src={"http://localhost:8000/storage/profiles/" + messages.user.profile.profile_pic} /> : <FontAwesomeIcon icon={faPerson} size="2xl" />}
+            messages.user.profile?.profile_pic ? <img onClick={()=>navigate('/profile/'+messages.user?.id)} className="h-[40px] object-cover cursor-pointer w-[40px] rounded-full" src={"http://localhost:8000/storage/profiles/" + messages.user.profile.profile_pic} /> : <FontAwesomeIcon icon={faPerson} size="2xl" />}
 
           <span onClick={()=>navigate('/profile/'+messages.user?.id)} className="text-xl cursor-pointer dark:text-gray-200 font-bold text-gray-600">
             {messages?.user != null ? messages.user.name : location?.name}
@@ -263,7 +239,7 @@ function ListMessages(props: any) {
       <form className="footer flex items-center gap-3">
         <FontAwesomeIcon onClick={()=>setCodeEditing(!isCodeEditing)} icon={faToolbox} size="2xl" className="text-gray-400 hover:text-gray-500 active:text-gray-600" />
         <textarea
-          rows={2}
+          rows={1}
           onKeyDown={submitFormTextArea}
           onChange={(e) => setMsg(e.target.value)}
           value={msg}

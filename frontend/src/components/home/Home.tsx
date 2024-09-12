@@ -18,19 +18,18 @@ function Home() {
   UseScrollListener({ scrollContainerRef, setHeaderHidden });
 
   return (
-    <div className={"home  transition-['top']  left-0  flex px-0  w-full  flex-col " + (headerHidden || isHeaderNavHidden ? "-translate-y-[6rem]" : '')}>
+    <div className={"home  transition-['top']  left-0  flex px-0  w-full  flex-col " + (headerHidden || isHeaderNavHidden ? "-translate-y-[4rem]" : '')}>
 
       <Header/>
-      <EchoConfig />
 
 
-      <div className="body dark:bg-black flex w-full justify-between">
+      <div className="body bg-gray-100 dark:bg-black flex w-full justify-between">
 
-        <div className={"left mt-6  min-w-fit left-0 w-[20vw] hidden " + (isLeftNavHidden ? " " : "lg:block")}>
+        <div className={"left mt-4  min-w-fit left-0 w-[20vw] hidden " + (isLeftNavHidden ? " " : "lg:block")}>
           <LeftNav />
         </div>
         
-        <div className={"center flex transition-[top] grow  duration-1000 flex-col   w-[100vw]   " + (isRightNavHidden && isLeftNavHidden ? ' lg:w-[100vw] ' : (isRightNavHidden ? ' lg:w-[80vw] ' : ' lg:w-[60vw] ')) + (headerHidden || isHeaderNavHidden ? ' h-[100vh]' : 'h-[calc(100vh-5rem)] mt-6 lg:h-[calc(100vh-8rem)]')}>
+        <div className={"center flex transition-[top] grow  duration-1000 flex-col   w-[100vw]   " + (isRightNavHidden && isLeftNavHidden ? ' lg:w-[100vw] ' : (isRightNavHidden ? ' lg:w-[80vw] ' : ' lg:w-[60vw] ')) + (headerHidden || isHeaderNavHidden ? ' h-[100vh]' : 'h-[calc(100vh-4rem)] mt-4 lg:h-[calc(100vh-4rem)]')}>
           <div ref={scrollContainerRef} className="out grow overflow-y-auto">
             <Outlet />
 
@@ -41,7 +40,7 @@ function Home() {
           </div>
 
         </div>
-        <div className={"right  mt-6 mx-3  right-0  hidden  " + (isRightNavHidden ? 'w-[0] hidden' : 'w-[20vw] lg:block')}>
+        <div className={"right  mt-4 mx-3  right-0  hidden  " + (isRightNavHidden ? 'w-[0] hidden' : 'w-[20vw] lg:block')}>
           <RightNav />
         </div>
       </div>
