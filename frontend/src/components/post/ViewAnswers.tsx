@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import ConfigStore from "../../zustand/ConfigStore";
 import { useNavigate, useParams } from "react-router-dom";
-import { useCastVoteMutation, useDeletePostMutation, useGetPostQuery, useIncreaseViewMutation } from "../../api/apiSlice";
+import { useCastVoteMutation, useDeletePostMutation, useGetPostQuery, useIncreaseViewMutation, useLazySearchQuery, useLazySimilarQuery } from "../../api/apiSlice";
 import { formatDate } from "../../helpers/DateTimeConverter";
 import MarkdownShower from "../markdown/MarkdownShower";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +11,8 @@ import { faArrowDown } from "@fortawesome/free-solid-svg-icons/faArrowDown";
 import useAuthStore from "../../zustand/AuthStore";
 import AddAnswer from "./AddAnswer";
 import AnswerBox from "./AnswerBox";
+import Post from "./Post";
+import { SiIssuu } from "react-icons/si";
 
 
 function ViewAnswers() {
@@ -23,6 +25,7 @@ function ViewAnswers() {
     const [castVote] = useCastVoteMutation();
     const [deletePost,] = useDeletePostMutation();
     const [increaseView] = useIncreaseViewMutation();
+    const [recommend,{isError:isRecommError,isLoading:isRecommLoading,isSuccess:isRecommSuccess,data:recommended=[]}] = useLazySimilarQuery();
 
     const navigate = useNavigate();
 
@@ -37,9 +40,19 @@ function ViewAnswers() {
         return () => { setLeftNav(false); setRightNav(false);clearTimeout(interval); }
     }, []);
 
+    useEffect(()=>{
+        // if(!isSuccess)return;
+        if(posts?.content){
+            recommend({query:{data:posts.content,id:posts.id}});
+        }
+
+    },[isSuccess,posts]);
+
     if (isLoading) return <div>Loading please wait...</div>
     if (isError) return <div>Something went wrong fetching the post.</div>
     if (!isSuccess) return <div>Got the data</div>
+
+
     const { user, created_at, content, user_id, id, updated_at, down_count, up_count, view_count } = posts;
     const profile_pic = user.profile?.profile_pic ?? null;
 
@@ -126,6 +139,19 @@ function ViewAnswers() {
 
 
             <AddAnswer post_id={post_id}/>
+
+
+
+                <div className="reco text-2xl font-bold mt-5">Similar Posts</div>
+
+            <div className="mt-5">
+      {
+       recommended.map((post:any)=>{
+          // console.log(key)
+          return <Post {...post} key={post.id}/>
+        })
+      }
+    </div>
 
 
 

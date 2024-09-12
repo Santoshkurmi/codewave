@@ -2,6 +2,7 @@ import re
 from gensim.models import Word2Vec
 from numpy import dot
 from numpy.linalg import norm
+import json
 # app.py
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
@@ -99,9 +100,59 @@ def getAllPosts():
     return posts;
 
 
+@app.route('/api/similar', methods=['POST'])
+def similar():
+    query = json.loads(request.get_json() );
+    
+    id = query['id'];
+    query = query["data"];
+    # print(query)
+    # print(id)
+    # limit = request.json.get('limit')
+    
+    if(not query):
+        return jsonify([]);
+    
+    cursor = mysql.connection.cursor()
+    cursor.execute("SELECT id, content as text FROM posts")
+    posts = cursor.fetchall()
+    model = train_model(posts);
+    cursor.close()
+
+    query_vector = vectorize_query(query,model);
+    if query_vector is None:
+        return [];
+
+
+  
+
+    results = []
+    for post in posts:
+        if(post[0] == id):continue;
+        post_vector = vectorize_query(post[1],model)
+        if post_vector is not None:
+            similarity = cosine_similarity(query_vector, post_vector)
+            results.append({'id': post[0], 'text': post[1], 'similarity': similarity})
+
+    results.sort(key=lambda x: x['similarity'], reverse=True)
+    top = results[:5];
+    ids = []
+    for item in top:
+        ids.append(item['id']);
+  
+    return ids;
+
+
+
+
 @app.route('/api/search', methods=['GET'])
 def search():
     query = request.args.get('query')
+    limit = request.args.get('limit')
+    if(limit):
+        limit = int(limit);
+    else:
+        limit = 30;
 
     if(not query):
         return jsonify([]);
@@ -130,18 +181,12 @@ def search():
             results.append({'id': post[0], 'text': post[1], 'similarity': similarity})
 
     results.sort(key=lambda x: x['similarity'], reverse=True)
-    top30 = results[:30];
+    top = results[:limit];
     ids = []
-    for item in top30:
+    for item in top:
         ids.append(item['id']);
-        # if 'similarity' in item:
-        #     del item['similarity']
-
-    # print(results);
-    # return {'data':ids};
+  
     return ids;
-    # return jsonify(ids)
-
 
 
 @app.route('/api/recommend', methods=['GET'])
@@ -173,7 +218,7 @@ def recommend_posts():
             query_vectors.append((post[0], post_vector))
 
     if not query_vectors:
-        return jsonify([])
+        return jsonify( [post[0] for post in posts]      )
 
 
     max_likes = max(post[2] for post in posts) if posts else 1
@@ -201,7 +246,7 @@ def recommend_posts():
     # Sort results by similarity
     results.sort(key=lambda x: x['similarity'], reverse=True)
 
-    top30 = results[:30];
+    top30 = results[:200];
     ids = []
     for item in top30:
         ids.append(item['id']);

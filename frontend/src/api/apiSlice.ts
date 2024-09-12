@@ -202,6 +202,22 @@ export const api = createApi(
                     return response.data;
                 }
             }),
+            getNotifications:builder.query<any,void>({
+                query:()=>({url:'/notifications'   }),
+                // invalidatesTags:['Post'],
+                transformResponse: (response: any) => {
+                    console.log(response)
+                    return response.data;
+                }
+            }),
+            similar:builder.query<any,{query:{data:string,id:number}}>({
+                query:(query)=>({url:'/similar',method:"POST",body:query   }),
+                // invalidatesTags:['Post'],
+                transformResponse: (response: any) => {
+                    console.log(response)
+                    return response.data;
+                }
+            }),
 
             createPost:builder.mutation<any,{content:string}>({
                 query:(postPayload)=>({url:'/create_post',body:postPayload,method:'POST'}),
@@ -259,6 +275,14 @@ export const api = createApi(
                 invalidatesTags:['Post'],
                 transformResponse: (response: any) => {
                     console.log(response);
+                    return response.data;
+                }
+            }),
+            getRecommend:builder.query<Post,void>({
+                query:(getPostPayload)=>({url:'/recommend',body:getPostPayload,method:'GET'}),
+                providesTags:['Post'],
+                transformResponse: (response: any) => {
+                    console.log(response)
                     return response.data;
                 }
             }),
@@ -391,4 +415,4 @@ export const api = createApi(
     }
 );//createAPi
 
-export const { useLazySearchQuery,useUpdateMessageViewMutation,usePostAnswerMutation,usePostCommentMutation,useUpdatePostMutation,useDeletePostMutation,useCreatePostMutation,useIncreaseViewMutation,useGetPostQuery,useCastVoteMutation,useUpdateBioMutation,useUploadCoverPicMutation,useGetUserProfileQuery,useUploadProfilePicMutation,useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;
+export const { useGetNotificationsQuery,useLazyGetNotificationsQuery,useLazySimilarQuery,useGetRecommendQuery,useLazySearchQuery,useUpdateMessageViewMutation,usePostAnswerMutation,usePostCommentMutation,useUpdatePostMutation,useDeletePostMutation,useCreatePostMutation,useIncreaseViewMutation,useGetPostQuery,useCastVoteMutation,useUpdateBioMutation,useUploadCoverPicMutation,useGetUserProfileQuery,useUploadProfilePicMutation,useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;

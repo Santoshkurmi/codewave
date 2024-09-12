@@ -28,12 +28,13 @@ function LeftNav() {
         { text:"Messages",icon: faMessage,path:'/messages' },
         { text:"Posts",icon: faCode,path:'/posts' },
         { text:"Profile",icon: faPerson,path:'/profile' },
-        // { text:"Notifications",icon: faBell,path:'/notifications' },
-        { text:"Settings",icon: faSearch,path:'/settings' },
-        { text:"LogOut",icon: faCross,path:'/logout' },
+        { text:"Notifications",icon: faBell,path:'/notifications' },
         { text:"People",icon: faPeopleLine },
-        { text:"Mentions",icon: faMagento },
-        { text:"Status",icon: faCreativeCommons },
+
+        // { text:"Settings",icon: faSearch,path:'/settings' },
+        { text:"LogOut",icon: faCross,path:'/logout' },
+        // { text:"Mentions",icon: faMagento },
+        // { text:"Status",icon: faCreativeCommons },
 ];
 
     // const router = createBrowserRouter([

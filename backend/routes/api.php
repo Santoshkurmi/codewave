@@ -6,11 +6,13 @@ use App\Http\Controllers\CodeRunner;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostViewController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\VoteController;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -30,13 +32,21 @@ Route::prefix('v1')->group(function(){
     Route::post('/login',[AuthController::class,'login']);
     Route::post('/refresh_token',[AuthController::class,'refreshAccessToken']);
 
-    Route::get('/search',[SearchController::class,'search']);
 });
 
 //api_auth
 Route::prefix('v1')->middleware('api_auth')->group(function(){
 
     // Route::post(uri: '/get',[AuthController::class,'search']);
+
+    Route::get('/notifications',[NotificationController::class,'getNotifications']);
+
+
+    Route::get('/search',[SearchController::class,'search']);
+    Route::get('/recommend',[SearchController::class,'recommend']);
+    Route::post('/similar',[SearchController::class,'similar']);
+
+
 
     Route::post('/logout',[AuthController::class,'logout']);
 

@@ -19,9 +19,23 @@ class FlaskApiService
     //     return $response->json();
     // }
 
-    public function search(String|null $query)
+    public function similar($query)
     {
-        $result = Http::get("{$this->baseUrl}/search?query=". $query);
+        $result = Http::post("{$this->baseUrl}/similar",$query);
+        // print_r($result);
+        return $result->json();
+    }
+
+    public function search($query,$limit)
+    {
+        $result = Http::get("{$this->baseUrl}/search?query=". $query."&limit=500");
+        // print_r($result);
+        return $result->json();
+    }
+
+    public function recommend($user_id)
+    {
+        $result = Http::get("{$this->baseUrl}/recommend?user_id=". $user_id);
         // print_r($result);
         return $result->json();
     }

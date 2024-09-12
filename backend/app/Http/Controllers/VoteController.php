@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Answer;
+use App\Models\Notification;
+use App\Models\Post;
 use App\Models\Vote;
 use Illuminate\Http\Request;
 
@@ -48,7 +51,26 @@ class VoteController extends Controller
             }
         }//vote already exists
 
-  
+
+        if($voteable_type == "post" ){
+            $post = Post::where('id',$id)->first();
+            $noti_user_id = $post->user_id;
+            $noti_name = auth()->user()->name;
+            $content = $noti_name.' has voted in your post';
+            if($noti_user_id != auth()->user()->id)
+            Notification::create(['user_id'=>$noti_user_id,'content'=>$content,'url'=>"/post/".$id]);
+
+        }
+        else{
+            $answer = Answer::where('id',$id)->first();
+            $noti_user_id = $answer->user_id;
+            $noti_name = auth()->user()->name;
+            $content = $noti_name.' has voted in your answer';
+            
+            if($noti_user_id != auth()->user()->id)
+            Notification::create(['user_id'=>$noti_user_id,'content'=>$content,'url'=>"/post/".$id]);
+        }
+
         $vote = Vote::create(['user_id'=>$user_id,'voteable_type'=>$voteable_type,'voteable_id'=>$id,'type'=>$vote_type]);
         if($vote) return response()->json(['success'=>true,'data'=>[]]);
         else return response()->json(['errors'=>['default'=>"Something went wrong creating votes"]],400);
