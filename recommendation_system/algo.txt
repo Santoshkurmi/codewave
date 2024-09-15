@@ -1,0 +1,61 @@
+
+
+Algorithm used in our project.
+
+
+In this project, we are using content based Algorithm to recommend users 
+of similar post user has alread interacted by storing the likes, views of users in a 
+database. There are threee places where such Algorithm is used slightly modified to 
+feed our need. 
+1. Search : In the search, the search text is used to match among the whole posts having
+almost the same Algorithm used for content based.
+
+2. News Feed: recommend using the current user data preference.
+
+3. Similar posts recommendation under the particular post: Provies similar post on the 
+basis of current post user is viewing.
+
+For computers to make  them better understand and compare , we need to calculate words and sentences into
+numbers. There are many ways to do that having its own pros and cons. In this we are 
+using Word2Vec which is the most popular techinique to converts words into list of numbers
+called vectors. It also able to capture semantics of words which Algorithm like 
+TF-IDF doesn't. For all the posts, we compute its vectors using word2Vec. After then we compare it
+
+with all the poss user has already interaced with by using cosine similarity Algorithm.
+We then sort the similarity in descending and recommend the top few posts. Similar
+techinique is used for search and for recommending similar post in the particular post too.
+
+-> word2vec:
+    Word2Vec is a machine learning Algorithm that is used to find embeding of the words by
+training each posts data and backtracking to update the weight of each neuron. The final
+weight of the network is the vector of that post. There are two methods of it.
+i. Continuous Bag of Words(CBOW):In this, the network calculate the middle word using the context words around it.
+We take generally window size of few words like 5 which means it used 5 words as context for training post.It is 
+faster method than skip gram method;
+ii. Skip Gram method: In this , it calculate the context words(surrounding words) from target words. Hence it outputs many words
+which is slower to train. It provide better vector embedding for large databset.
+
+
+Steps:
+1. Collect the user data:
+    In this step, we collect user details like post user has voted, answered,created and viewed
+which is required for recommending new posts.
+
+2. Vectorize all the posts:
+using word2vec from which to recommended(X) and also the user interacted post(Y).
+let consider X and Y posts where X is the posts from which we are trying to recommend and Y is
+user posts data that user has interacted.
+
+
+
+In our project, we are using word2vec using Continuous bag of words method which is faster and good for small dataset.
+
+3. calculate cosine similarity of each Y posts vecotor with X posts:
+After calculating the cosine similarity for each posts, we rank the hightest similarity sorting and then recommend the
+user top 'x' posts.
+
+The same above step is repeated for each time we have to recommend users. It is also works for searching too by 
+making search Query as Y post, and we already have X dataset which is the all posts of our database.
+For calculation, we are using python libraries like gensim for word2vec, numpy and pandas for vector transformation and
+calculation of cosine similarity.
+
