@@ -401,6 +401,10 @@ export const api = createApi(
                 invalidatesTags:['Profile']
 
             }),
+            getCount:builder.query<{count:number},void>({
+                query:()=> ({url:'/count'}),
+                transformResponse:(response:any)=>{return response.data;},
+            }),
 
             updateBio:builder.mutation({
                 query:(bio:string)=> ({url:'/update_bio',body:{bio:bio},method:"POST"}),
@@ -415,4 +419,4 @@ export const api = createApi(
     }
 );//createAPi
 
-export const { useGetNotificationsQuery,useLazyGetNotificationsQuery,useLazySimilarQuery,useGetRecommendQuery,useLazySearchQuery,useUpdateMessageViewMutation,usePostAnswerMutation,usePostCommentMutation,useUpdatePostMutation,useDeletePostMutation,useCreatePostMutation,useIncreaseViewMutation,useGetPostQuery,useCastVoteMutation,useUpdateBioMutation,useUploadCoverPicMutation,useGetUserProfileQuery,useUploadProfilePicMutation,useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;
+export const { useGetCountQuery,useGetNotificationsQuery,useLazyGetNotificationsQuery,useLazySimilarQuery,useGetRecommendQuery,useLazySearchQuery,useUpdateMessageViewMutation,usePostAnswerMutation,usePostCommentMutation,useUpdatePostMutation,useDeletePostMutation,useCreatePostMutation,useIncreaseViewMutation,useGetPostQuery,useCastVoteMutation,useUpdateBioMutation,useUploadCoverPicMutation,useGetUserProfileQuery,useUploadProfilePicMutation,useGetConversationsQuery,useGetPreviousMessagesMutation, useGetMessagesQuery, useSendMessageMutation, useGetUsersQuery, useLogoutMutation } = api;

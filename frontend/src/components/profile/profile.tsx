@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useGetPostQuery, useGetUserProfileQuery, useUpdateBioMutation, useUploadCoverPicMutation, useUploadProfilePicMutation } from "../../api/apiSlice";
+import { useGetCountQuery, useGetPostQuery, useGetUserProfileQuery, useUpdateBioMutation, useUploadCoverPicMutation, useUploadProfilePicMutation } from "../../api/apiSlice";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import Post from "../post/Post";
@@ -15,15 +15,15 @@ export default function Profile() {
   const bioRef = useRef<HTMLParagraphElement>(null);
   const [uplaodProfile, { isLoading: isProfileLoading, }] = useUploadProfilePicMutation();
   const [uplaodCover, { isLoading: isCoverLoading }] = useUploadCoverPicMutation();
-  const { isLoading,isFetching, data: user, isSuccess: isUserLoaded, isError: isProfileError } = useGetUserProfileQuery(user_id? Number(user_id) : null);
+  const { isLoading, isFetching, data: user, isSuccess: isUserLoaded, isError: isProfileError } = useGetUserProfileQuery(user_id ? Number(user_id) : null);
   const [uploadBio, { isLoading: isBioUpdating }] = useUpdateBioMutation();
+  const { data: count = { count: 0 } } = useGetCountQuery()
   const [profilePic, setProfilePic] = useState("")
   const [coverPic, setCoverPic] = useState("")
   const [bio, setBio] = useState("This is your bio");
   const [bioEdit, setBioEdit] = useState("");
 
-
-  const {isLoading:isPostLoading,isError:isPostError,isSuccess:isPostSuccess,data:posts} = useGetPostQuery({user_id:user_id? user_id:localUser?.id});
+  const { isLoading: isPostLoading, isError: isPostError, isSuccess: isPostSuccess, data: posts } = useGetPostQuery({ user_id: user_id ? user_id : localUser?.id });
 
   // const profile = useMemo(() => user ? user.profile : null, [isLoading]);
   const [isBioEditing, setBioEditing] = useState(false);
@@ -109,9 +109,9 @@ export default function Profile() {
   useEffect(() => {
     // alert("he")
     // console.log(user);
-    console.log(user,"Yes");
+    console.log(user, "Yes");
     if (!isUserLoaded) return;
-    const profile =  user ? user.profile : null;
+    const profile = user ? user.profile : null;
     if (!profile) {
       setProfilePic("https://icons.veryicon.com/png/o/miscellaneous/standard/avatar-15.png");
       setCoverPic("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTS2EcdIORfXbTTFGFHRJaIzFgicsaitEv1fQ&s")
@@ -130,7 +130,7 @@ export default function Profile() {
 
     if (!profile.bio)
       setBio("No Bio");
-    else{
+    else {
       setBio(profile.bio);
       setBioEdit(profile.bio);
     }
@@ -163,13 +163,13 @@ export default function Profile() {
         {
           isCoverLoading ?
             <div className="div w-full flex justify-center items-center">
-               <div className="spinner bg-white dark:bg-gray-500 h-[200px] w-[200px] rounded-full dark:shadow-gray-100 dark:shadow-sm shadow-lg">
-               </div>
+              <div className="spinner bg-white dark:bg-gray-500 h-[200px] w-[200px] rounded-full dark:shadow-gray-100 dark:shadow-sm shadow-lg">
+              </div>
             </div>
             :
             <img
               ref={profileRef}
-              onClick={() =>localUser?.id==user.id? coverFileRef.current?.click():null}
+              onClick={() => localUser?.id == user.id ? coverFileRef.current?.click() : null}
               className="w-full h-[200px] object-cover rounded-lg shadow-lg"
               alt=""
               src={coverPic}
@@ -200,7 +200,7 @@ export default function Profile() {
               </div> :
               <img
                 ref={profileRef}
-                onClick={() => localUser?.id==user.id? fileRef.current?.click():null}
+                onClick={() => localUser?.id == user.id ? fileRef.current?.click() : null}
                 className="hover:scale-110 transition-transform h-[200px] bg-white w-[200px] object-cover rounded-full shadow-lg"
                 alt=""
                 src={profilePic}
@@ -208,7 +208,7 @@ export default function Profile() {
               />
           }
 
-          <div  className=" select-text details flex flex-col justify-center items-center">
+          <div className=" select-text details flex flex-col justify-center items-center">
             <div className="name text-3xl">{user.name}</div>
 
             {
@@ -217,110 +217,111 @@ export default function Profile() {
                   <p contentEditable={isBioEditing} ref={bioRef} className={"bio rounded-lg p-4 dark:bg-gray-800  outline-none text-xl mt-5 " + (isBioEditing ? "shadow-lg" : "")}>
                     {bio}
                   </p>
-                 {
-                 
-                 localUser?.id==user.id?
-                  <button onClick={() => setBioEditing(true)} className="bg-gray-300 dark:bg-gray-700 mt-4 px-4 py-1 rounded-lg">Edit Bio</button>
-                  :null
-                 } 
+                  {
+
+                    localUser?.id == user.id ?
+                      <button onClick={() => setBioEditing(true)} className="bg-gray-300 dark:bg-gray-700 mt-4 px-4 py-1 rounded-lg">Edit Bio</button>
+                      : null
+                  }
 
                 </>
                 :
                 <>
-                   <textarea rows={6} onChange={(e)=>setBioEdit(e.target.value)} className="block p-4 mt-5 dark:bg-black dark:border rounded-lg" value={bioEdit} /> 
-                <div className="buttons flex justify-between gap-5">
-                  <button onClick={()=>setBioEditing(false)} className="bg-gray-300 dark:bg-gray-700 mt-4 px-4 py-1 rounded-lg">Cancel</button>
-                  <button disabled={isBioUpdating} onClick={handleBioUpdate} className="bg-gray-300 dark:bg-gray-700 mt-4 px-4 py-1 rounded-lg disabled:bg-gray-200 dark:disabled:bg-gray-500">Save</button>
-                </div>
+                  <textarea rows={6} onChange={(e) => setBioEdit(e.target.value)} className="block p-4 mt-5 dark:bg-black dark:border rounded-lg" value={bioEdit} />
+                  <div className="buttons flex justify-between gap-5">
+                    <button onClick={() => setBioEditing(false)} className="bg-gray-300 dark:bg-gray-700 mt-4 px-4 py-1 rounded-lg">Cancel</button>
+                    <button disabled={isBioUpdating} onClick={handleBioUpdate} className="bg-gray-300 dark:bg-gray-700 mt-4 px-4 py-1 rounded-lg disabled:bg-gray-200 dark:disabled:bg-gray-500">Save</button>
+                  </div>
 
                 </>
-               
+
 
 
             }
 
           </div>
           {
-             !(localUser?.id==user.id)? <button className="my-5 bg-blue-600 py-2 px-4 rounded-lg hover:bg-blue-700 active:bg-blue-800 " onClick={()=>navigate('/messages/'+user.id)}>Message</button>:null
+            !(localUser?.id == user.id) ? <button className="my-5 bg-blue-600 py-2 px-4 rounded-lg hover:bg-blue-700 active:bg-blue-800 " onClick={() => navigate('/messages/' + user.id)}>Message</button> : null
 
           }
 
           <h3 className="self-start text-2xl font-bold mt-5 mb-10">Achievements:</h3>
           <div className="achieves  flex flex-wrap gap-5">
-            <div className="box border p-4 rounded-lg shadow-lg">
-              <div className="header flex gap-8">
-                <img
-                  className="w-[100px]"
-                  src="https://t4.ftcdn.net/jpg/03/50/11/83/360_F_350118359_fs2GIXzHjBhStQtRXq4yI927EcSxfS9A.jpg"
-                  alt=""
-                />
-                <div className="no of flex flex-col">
-                  <div className="no text-3xl">30</div>
-                  <div className="desc">gold badges</div>
-                </div>
-              </div>
-            </div>
 
-            <div className="box border p-4 rounded-lg shadow-lg">
-              <div className="header flex gap-8">
-                <img
-                  className="w-[100px]"
-                  src="https://t4.ftcdn.net/jpg/03/50/11/83/360_F_350118359_fs2GIXzHjBhStQtRXq4yI927EcSxfS9A.jpg"
-                  alt=""
-                />
-                <div className="no of flex flex-col">
-                  <div className="no text-3xl">30</div>
-                  <div className="desc">gold badges</div>
+            {
+              count.count > 0 &&
+              <div className="box border p-4 rounded-lg shadow-lg">
+                <div className="header flex gap-8">
+                  <img
+                    className="w-[100px]"
+                    src="https://t4.ftcdn.net/jpg/03/50/11/83/360_F_350118359_fs2GIXzHjBhStQtRXq4yI927EcSxfS9A.jpg"
+                    alt=""
+                  />
+                  <div className="no of flex flex-col">
+                    <div className="no text-3xl">5</div>
+                    <div className="desc">Silver badges</div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="box border p-4 rounded-lg shadow-lg">
-              <div className="header flex gap-8">
-                <img
-                  className="w-[100px]"
-                  src="https://t4.ftcdn.net/jpg/03/50/11/83/360_F_350118359_fs2GIXzHjBhStQtRXq4yI927EcSxfS9A.jpg"
-                  alt=""
-                />
-                <div className="no of flex flex-col">
-                  <div className="no text-3xl">30</div>
-                  <div className="desc">gold badges</div>
-                </div>
-              </div>
-            </div>
-            <div className="box border p-4 rounded-lg shadow-lg">
-              <div className="header flex gap-8">
-                <img
-                  className="w-[100px]"
-                  src="https://t4.ftcdn.net/jpg/03/50/11/83/360_F_350118359_fs2GIXzHjBhStQtRXq4yI927EcSxfS9A.jpg"
-                  alt=""
-                />
-                <div className="no of flex flex-col">
-                  <div className="no text-3xl">30</div>
-                  <div className="desc">gold badges</div>
-                </div>
-              </div>
-            </div>
+            }
 
 
-            
+            {
+              count.count > 5 &&
+              <div className="box border p-4 rounded-lg shadow-lg">
+                <div className="header flex gap-8">
+                  <img
+                    className="w-[100px]"
+                    src="https://t4.ftcdn.net/jpg/03/50/11/83/360_F_350118359_fs2GIXzHjBhStQtRXq4yI927EcSxfS9A.jpg"
+                    alt=""
+                  />
+                  <div className="no of flex flex-col">
+                    <div className="no text-3xl">10</div>
+                    <div className="desc">Bronze badges</div>
+                  </div>
+                </div>
+              </div>
+            }
+
+
+{
+
+count.count >15 &&
+<div className="box border p-4 rounded-lg shadow-lg">
+<div className="header flex gap-8">
+  <img
+    className="w-[100px]"
+    src="https://t4.ftcdn.net/jpg/03/50/11/83/360_F_350118359_fs2GIXzHjBhStQtRXq4yI927EcSxfS9A.jpg"
+    alt=""
+  />
+  <div className="no of flex flex-col">
+    <div className="no text-3xl">15</div>
+    <div className="desc">Gold badges</div>
+  </div>
+</div>
+</div>
+
+}
+
+        
 
           </div>
 
           <div className="post self-start w-full">
-              <h1 className="mt-5 text-3xl font-bold my-5">Posts</h1>
-              {
-                isPostLoading ? <div className="spinner h-[60px] w-[60px]"></div>
+            <h1 className="mt-5 text-3xl font-bold my-5">Posts</h1>
+            {
+              isPostLoading ? <div className="spinner h-[60px] w-[60px]"></div>
                 : null
-              }
-              {
-                isPostSuccess ? posts.map((post:any)=>{
-                  // console.log(key)
-                  return <Post {...post} key={post.id}/>
-                })
+            }
+            {
+              isPostSuccess ? posts.map((post: any) => {
+                // console.log(key)
+                return <Post {...post} key={post.id} />
+              })
 
-               :null
-              }
-            </div>
+                : null
+            }
+          </div>
 
         </div>
       </div>

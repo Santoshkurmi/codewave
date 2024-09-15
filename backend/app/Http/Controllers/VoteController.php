@@ -78,5 +78,12 @@ class VoteController extends Controller
       
     }//vote
 
+    public function totalVoteOfUser(Request $request){
+       $totalVote =  Vote::where('user_id',auth()->user()->id)->count();
+        
+       return response()->json(['data'=>['count'=>$totalVote]]);
+   
+    }
+
     
 }

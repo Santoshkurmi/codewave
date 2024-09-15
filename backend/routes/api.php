@@ -43,6 +43,9 @@ Route::prefix('v1')->middleware('api_auth')->group(function(){
 
 
     Route::get('/search',[SearchController::class,'search']);
+    
+    Route::get('/count',[VoteController::class,'totalVoteOfUser']);
+
     Route::get('/recommend',[SearchController::class,'recommend']);
     Route::post('/similar',[SearchController::class,'similar']);
 
