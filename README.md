@@ -29,8 +29,8 @@ Video link
 https://youtu.be/icG9_qXU0_w
 
 
-<iframe width="560" height="315" src="https://youtu.be/icG9_qXU0_w
-" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+or click the below image to open video
+[![Cover](/assets/1.png)](https://youtu.be/icG9_qXU0_w)
 
 
 # Things that are working
